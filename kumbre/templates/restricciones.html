@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}La Kumbre - Restricciones{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/restricciones.css' %}">
+<!-- Añadir Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Añadir Font Awesome para iconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<link rel="stylesheet" href="{% static 'styles/restricciones.css' %}">
+
+<div class="restricciones-container">
+    <div class="titulo-container">
+        <h1 class="titulo-principal">Restricciones <span>La Kumbre</span></h1>
+    </div>
+    
+    <div class="cards-container">
+        <div class="card-restriction">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="icon">
+                        <i class="fas fa-pills"></i>
+                    </div>
+                    <h3>Sustancias</h3>
+                </div>
+                <div class="card-back">
+                    <p>No se permite el consumo de sustancias ilícitas dentro de las instalaciones.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-restriction">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>Fogatas</h3>
+                </div>
+                <div class="card-back">
+                    <p>Está prohibido hacer fogatas o encender fuegos abiertos fuera de las áreas autorizadas.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-restriction">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <h3>Armas</h3>
+                </div>
+                <div class="card-back">
+                    <p>No se permite el ingreso con armas de fuego o cualquier objeto peligroso.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-restriction">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Naturaleza</h3>
+                </div>
+                <div class="card-back">
+                    <p>Se prohíbe la extracción de plantas, piedras o cualquier elemento natural del ecosistema.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-restriction">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="icon">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h3>Residuos</h3>
+                </div>
+                <div class="card-back">
+                    <p>Desecha la basura en los lugares designados y respeta la separación de residuos.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card-restriction">
+            <div class="card-inner">
+                <div class="card-front">
+                    <div class="icon">
+                        <i class="fas fa-hammer"></i>
+                    </div>
+                    <h3>Instalaciones</h3>
+                </div>
+                <div class="card-back">
+                    <p>Está prohibido dañar, marcar, rayar o modificar cualquier parte de las instalaciones, mobiliario o equipamiento. Cualquier daño deberá ser reportado inmediatamente y podría generar cargos adicionales.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Asegúrate de incluir Font Awesome para los íconos -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+
+<!-- Script para animaciones de aparición -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
+        // Añadir clase "visible" a las cajas con retraso
+        const boxes = document.querySelectorAll('.box');
+        boxes.forEach((box, index) => {
+            setTimeout(() => {
+                box.classList.add('visible');
+            }, 200 * index);
+        });
+    });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,223 @@
+/* Estilos base */
+.restricciones-container {
+    max-width: 1000px;
+    margin-bottom: 3em;
+    height: auto;
+    margin: 0 auto;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos del título */
+.titulo-container {
+    text-align: center;
+    margin-top: 3em;
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.titulo-principal {
+    font-size: 3.5rem;
+    color: #000000;
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    padding-bottom: 1rem;
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.titulo-principal::after {
+    content: '';
+    position: absolute;
+    width: 80%;
+    height: 5px;
+    background: linear-gradient(90deg, #0a6e5a, #3CAEA3);
+    bottom: 0;
+    left: 10%;
+    border-radius: 50px;
+    animation: expand 2s ease-in-out infinite alternate;
+}
+
+.titulo-principal span {
+    color: #2ad4b2;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.titulo-principal span::before {
+    content: '';
+    position: absolute;
+    width: 110%;
+    height: 30%;
+    background-color: rgba(60, 174, 163, 0.2);
+    bottom: 5px;
+    left: -5%;
+    z-index: -1;
+    transform: rotate(-2deg);
+}
+
+/* Contenedor de las tarjetas */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    perspective: 1000px;
+}
+
+/* Estilos de las tarjetas */
+.card-restriction {
+    height: 200px;
+    perspective: 1000px;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.card-restriction:hover .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+}
+
+.card-front {
+    background: linear-gradient(145deg, #2e8075, #1d5e57);
+    color: white;
+}
+
+.card-back {
+    background-color: #275753b0;
+    color: #ffffff;
+    
+    transform: rotateY(180deg);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+.card-back p{
+    font-size: 6em;
+}
+/* Iconos */
+.icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: pulse 2s infinite;
+}
+
+.card-front h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.card-back p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes expand {
+    from { width: 60%; left: 20%; }
+    to { width: 90%; left: 5%; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Efecto al cargar la página */
+.card-restriction {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: cardAppear 0.6s forwards;
+}
+
+@keyframes cardAppear {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card-restriction:nth-child(1) { animation-delay: 0.2s; }
+.card-restriction:nth-child(2) { animation-delay: 0.4s; }
+.card-restriction:nth-child(3) { animation-delay: 0.6s; }
+.card-restriction:nth-child(4) { animation-delay: 0.8s; }
+.card-restriction:nth-child(5) { animation-delay: 1s; }
+
+/* Media queries para responsividad */
+@media (max-width: 1200px) {
+    .cards-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .cards-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .titulo-principal {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .restricciones-container {
+        padding: 1.5rem;
+    }
+    
+    .titulo-principal {
+        font-size: 2.2rem;
+    }
+    
+    .card-restriction {
+        height: 180px;
+    }
+}
+
+@media (max-width: 576px) {
+    .cards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .titulo-principal {
+        font-size: 1.8rem;
+    }
+    
+    .card-back p {
+        font-size: 1rem;
+    }
+}

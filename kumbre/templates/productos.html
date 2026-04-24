@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gastronomía{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/productos.css' %}">
+
+<h1>Deleítate con nuestros Productos</h1>
+
+<div class="container">
+    {% if productos_agrupados %}
+        {% for tipo_producto, productos_lista in productos_agrupados %}
+            <!-- Título de la categoría -->
+            <div class="section-header">
+                <h2>
+                    {% if tipo_producto == 'comida' %}
+                        Comidas
+                    {% elif tipo_producto == 'bebida' %}
+                        Bebidas
+                    {% else %}
+                        {{ tipo_producto|title }}
+                    {% endif %}
+                </h2>
+            </div>
+            
+            <!-- Grid de productos para esta categoría -->
+            <div class="products-grid">
+                {% for producto in productos_lista %}
+                    <div class="product-card">
+                        <!-- Imagen del producto -->
+                        {% if producto.imagen %}
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product-image">
+                        {% else %}
+                            <img src="{% static 'images/no-image.jpg' %}" alt="Sin imagen" class="product-image">
+                        {% endif %}
+                        
+                        <!-- Nombre del producto -->
+                        <h3>{{ producto.nombre }}</h3>
+                        
+                        <!-- Descripción -->
+                        <div class="product-description">
+                            {{ producto.descripcion|default:"Sin descripción disponible" }}
+                        </div>
+                        
+                        <!-- Opciones de precio -->
+                        <div class="price-options">
+                            {% if producto.precio_copa %}
+                                <p>Copa: <strong>${{ producto.precio_copa }}</strong></p>
+                            {% endif %}
+                            {% if producto.precio_jarra %}
+                                <p>Jarra: <strong>${{ producto.precio_jarra }}</strong></p>
+                            {% endif %}
+                            {% if producto.precio %}
+                                <p>Precio: <strong>${{ producto.precio }}</strong></p>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Selector de presentación (si aplica) -->
+                        {% if producto.precio_copa and producto.precio_jarra %}
+                            <div class="presentacion-selector">
+                                <label for="presentacion_{{ producto.id }}">Presentación:</label>
+                                <select class="presentacion-select" id="presentacion_{{ producto.id }}" 
+                                        onchange="actualizarPrecio({{ producto.id }}, {{ producto.precio_copa }}, {{ producto.precio_jarra }})">
+                                    <option value="copa" data-precio="{{ producto.precio_copa }}">Copa</option>
+                                    <option value="jarra" data-precio="{{ producto.precio_jarra }}">Jarra</option>
+                                </select>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Selector de cantidad -->
+                        <div class="cantidad-selector">
+                            <label for="cantidad_{{ producto.id }}">Cantidad:</label>
+                            <input type="number" class="cantidad-input" id="cantidad_{{ producto.id }}" 
+                                   value="1" min="1" 
+                                   onchange="actualizarPrecioTotal({{ producto.id }})">
+                        </div>
+                        
+                        <!-- Precio total -->
+                        <div class="precio-total">
+                            <p>Total: <strong id="total_{{ producto.id }}">
+                                {% if producto.precio_copa %}
+                                    ${{ producto.precio_copa }}
+                                {% elif producto.precio %}
+                                    ${{ producto.precio }}
+                                {% else %}
+                                    $0
+                                {% endif %}
+                            </strong></p>
+                        </div>
+                        
+                        <!-- Botón agregar al carrito -->
+                        {% if user.is_authenticated %}
+                            <button class="btn btn-primary" 
+                                    onclick="agregarAlCarrito({{ producto.id }})"
+                                    id="btn_{{ producto.id }}">
+                                Agregar al Carrito
+                            </button>
+                        {% else %}
+                            <a href="{% url 'iniciar_sesion' %}" style="text-decoration: none;">
+                                <button type="button" class="btn btn-primary">
+                                    Inicia sesión para comprar
+                                </button>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-products">
+            <p>No hay productos disponibles en este momento.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Token CSRF para las peticiones AJAX -->
+{% csrf_token %}
+
+<script>
+// Obtener token CSRF
+// Obtener token CSRF (versión mejorada)
+function getCSRFToken() {
+    // Primero intentar desde el input hidden
+    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (csrfInput) {
+        return csrfInput.value;
+    }
+    
+    // Si no existe, intentar desde las cookies
+    const cookieValue = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='))
+        ?.split('=')[1];
+    
+    if (cookieValue) {
+        return cookieValue;
+    }
+    
+    console.error('CSRF token no encontrado');
+    return '';
+}
+
+// Función para actualizar precio según presentación
+function actualizarPrecio(productoId, precioCopa, precioJarra) {
+    const select = document.getElementById(`presentacion_${productoId}`);
+    const totalElement = document.getElementById(`total_${productoId}`);
+    const cantidadInput = document.getElementById(`cantidad_${productoId}`);
+    
+    if (!select || !totalElement || !cantidadInput) {
+        console.error('Elementos no encontrados para producto:', productoId);
+        return;
+    }
+    
+    const presentacion = select.value;
+    const cantidad = parseInt(cantidadInput.value) || 1;
+    
+    let precioUnitario = presentacion === 'copa' ? precioCopa : precioJarra;
+    let total = precioUnitario * cantidad;
+    
+    totalElement.textContent = `$${total.toFixed(2)}`;
+}
+
+// Función para actualizar precio total según cantidad
+function actualizarPrecioTotal(productoId) {
+    const cantidadInput = document.getElementById(`cantidad_${productoId}`);
+    const totalElement = document.getElementById(`total_${productoId}`);
+    const presentacionSelect = document.getElementById(`presentacion_${productoId}`);
+    
+    if (!cantidadInput || !totalElement) {
+        console.error('Elementos no encontrados para actualizar precio total:', productoId);
+        return;
+    }
+    
+    const cantidad = parseInt(cantidadInput.value) || 1;
+    
+    // Obtener precio unitario
+    let precioUnitario = 0;
+    if (presentacionSelect) {
+        const selectedOption = presentacionSelect.options[presentacionSelect.selectedIndex];
+        precioUnitario = parseFloat(selectedOption.dataset.precio) || 0;
+    } else {
+        // Si no hay selector de presentación, obtener precio del elemento
+        const precioText = totalElement.textContent.replace('$', '').replace(',', '');
+        const lastQuantity = parseInt(cantidadInput.dataset.lastQuantity) || 1;
+        precioUnitario = parseFloat(precioText) / lastQuantity;
+    }
+    
+    const total = precioUnitario * cantidad;
+    totalElement.textContent = `$${total.toFixed(2)}`;
+    cantidadInput.dataset.lastQuantity = cantidad;
+}
+
+// Función para agregar al carrito (CORREGIDA CON LA URL CORRECTA)
+function agregarAlCarrito(productoId) {
+    const cantidadInput = document.getElementById(`cantidad_${productoId}`);
+    const presentacionSelect = document.getElementById(`presentacion_${productoId}`);
+    const boton = document.getElementById(`btn_${productoId}`);
+    
+    // Validar elementos existen
+    if (!cantidadInput || !boton) {
+        console.error('Elementos del formulario no encontrados para producto:', productoId);
+        alert('Error: No se pudieron encontrar los elementos del formulario');
+        return;
+    }
+    
+    const cantidad = parseInt(cantidadInput.value) || 1;
+    const presentacion = presentacionSelect ? presentacionSelect.value : null;
+    
+    // Validar cantidad
+    if (cantidad <= 0) {
+        alert('La cantidad debe ser mayor a 0');
+        cantidadInput.focus();
+        return;
+    }
+    
+    // Validar que tenemos el token CSRF
+    const csrfToken = getCSRFToken();
+    if (!csrfToken) {
+        alert('Error: No se pudo obtener el token de seguridad');
+        return;
+    }
+    
+    console.log('Enviando al servidor:', {
+        productoId: productoId,
+        cantidad: cantidad,
+        presentacion: presentacion,
+        url: `/agregar_producto/${productoId}/`
+    });
+    
+    // Deshabilitar botón temporalmente
+    const textoOriginal = boton.textContent;
+    const colorOriginal = boton.style.backgroundColor;
+    boton.disabled = true;
+    boton.textContent = 'Agregando...';
+    boton.style.backgroundColor = '#6c757d';
+    
+    // Hacer petición AJAX con la URL CORRECTA
+    fetch(`/agregar_producto/${productoId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            cantidad: cantidad,
+            presentacion: presentacion
+        })
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        return response.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        
+        if (data.success) {
+            // Mostrar mensaje de éxito
+            boton.textContent = '¡Agregado!';
+            boton.style.backgroundColor = '#28a745';
+            
+            // Actualizar contador del carrito si existe
+            const cartCounter = document.querySelector('#contador-carrito');
+            if (cartCounter) {
+                cartCounter.textContent = data.cart_count;
+            }
+            
+            // Mostrar mensaje opcional
+            if (data.mensaje) {
+                console.log('Mensaje del servidor:', data.mensaje);
+            }
+            
+            // Restaurar botón después de 2 segundos
+            setTimeout(() => {
+                boton.disabled = false;
+                boton.textContent = textoOriginal;
+                boton.style.backgroundColor = colorOriginal;
+            }, 2000);
+            
+        } else {
+            // Mostrar error del servidor
+            const mensaje = data.mensaje || 'Error desconocido del servidor';
+            alert('Error: ' + mensaje);
+            console.error('Error del servidor:', data);
+            
+            // Restaurar botón
+            boton.disabled = false;
+            boton.textContent = textoOriginal;
+            boton.style.backgroundColor = colorOriginal;
+        }
+    })
+    .catch(error => {
+        console.error('Error completo:', error);
+        
+        // Mensaje de error más específico
+        let mensajeError = 'Error al agregar el producto al carrito.';
+        if (error.message.includes('404')) {
+            mensajeError += ' La URL no fue encontrada. Verifica la configuración de URLs.';
+        } else if (error.message.includes('403')) {
+            mensajeError += ' Error de permisos. Verifica que estés autenticado.';
+        } else if (error.message.includes('500')) {
+            mensajeError += ' Error interno del servidor.';
+        }
+        
+        alert(mensajeError + ' Revisa la consola para más detalles.');
+        
+        // Restaurar botón
+        boton.disabled = false;
+        boton.textContent = textoOriginal;
+        boton.style.backgroundColor = colorOriginal;
+    });
+}
+
+// Inicializar precios al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Inicializando página de productos...');
+    
+    // Inicializar datos de cantidad para cada producto
+    const cantidadInputs = document.querySelectorAll('.cantidad-input');
+    cantidadInputs.forEach(input => {
+        input.dataset.lastQuantity = input.value;
+        console.log(`Inicializado producto ${input.id} con cantidad:`, input.value);
+    });
+    
+    // Verificar que tenemos el token CSRF
+    const csrfToken = getCSRFToken();
+    if (csrfToken) {
+        console.log('Token CSRF encontrado correctamente');
+    } else {
+        console.warn('Token CSRF no encontrado - esto causará errores al agregar productos');
+    }
+    
+    // Verificar que todos los botones tienen sus funciones
+    const botones = document.querySelectorAll('[onclick*="agregarAlCarrito"]');
+    console.log(`Encontrados ${botones.length} botones de agregar al carrito`);
+    
+    console.log('Inicialización completada');
+});
+</script>
+
+{% endblock %}

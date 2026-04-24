@@ -1,0 +1,177 @@
+<!-- web/templates/base.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <title>La Kumbre</title>
+    <link rel="stylesheet" href="{% static 'styles/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/icino.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <div class="arriba">
+            <div class="arriba">
+                <a href="{% url 'inicio'%}">
+                    <img src="{% static 'img/logotipo.webp' %}" alt="Descripción de la imagen">
+                </a>
+            </div>
+        </div>
+        <nav>
+            <input type="checkbox" id="menu-toggle" class="menu-checkbox">
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+        <ul class="menu">  
+            <li class="links"><a href="{% url 'nosotros' %}">Nosotros</a></li>
+            <li class="links"><a href="{% url 'cabanas' %}">Cabañas</a></li>
+            <li class="links"><a href="{% url 'productos' %}">Gastronomia</a></li>
+            <li class="links"><a href="{% url 'galeria' %}">Galeria</a></li>
+            <li class="links"><a href="{% url 'spots' %}">Spots</a></li>
+        </ul>
+        
+        <div class="nav-iconos">
+            {% if user.is_authenticated %}
+            <div class="nav-user-dropdown">
+                <i class="ri-user-line"></i>
+                <div class="dropdown-content">
+                    <a href="{% url 'perfil' %}">
+                        <i class="ri-user-line"></i>
+                        Perfil de usuario
+                    </a>
+                    <a href="{% url 'historial' %}">
+                        <i class="ri-shopping-cart-line"></i> 
+                        Historial de Compras
+                    </a>
+                    <a href="{% url 'logout' %}">
+                        <i class="ri-logout-box-line"></i>
+                        Cerrar sesión
+                    </a>
+                </div>
+            </div>
+            <div class="cart-icon-container">
+                <a href="{% url 'resumen_compra' %}">
+                    <i class="ri-calendar-check-line"></i>
+                    <span id="contador-carrito">{{ cart_count }}</span>
+                </a>
+            </div>
+            {% else %}
+            <a href="{% url 'iniciar_sesion' %}"><i class="ri-user-line"></i></a>
+            {% endif %}
+        </div>
+</nav>
+
+</header>
+<main>
+    {% block content %}
+    
+    
+    {% endblock %}
+</main>
+
+<footer>
+    <div class="footer-container">
+        <!-- Apartado 1: Contactenos -->
+        <div class="footer-item contactenos">
+            <h3>Contactenos</h3>
+            <p><strong>Teléfono:</strong></p>
+            <p><a href="tel:+573108831683">3108831683</a></p>
+            <p><strong>Correo:</strong></p>
+            <p><a href="mailto:lakumbredelhuila01@gmail.com">lakumbredelhuila01@gmail.com</a></p>
+        </div>
+        
+        <!-- Apartado 2: Redes sociales -->
+        <div class="footer-item redes-sociales">
+            <h3>Síguenos</h3>
+            <div class="social-icons">
+                <a href="https://wa.link/i27wt5" target="_blank">
+                    <img src="{% static 'img/whatsapp.webp' %}" alt="WhatsApp" width="40">
+                </a>
+                <a href="https://www.facebook.com/lakumbredelhuila/?_rdc=2&_rdr#" target="_blank">
+                    <img src="{% static 'img/facebook.webp' %}" alt="Facebook" width="40">
+                </a>
+                <a href="https://www.instagram.com/lakumbredelhuila?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
+                    <img src="{% static 'img/instagram.webp' %}" alt="Instagram" width="40">
+                </a>
+            </div>
+        </div>
+        
+        <!-- Apartado 3: Ubicación -->
+        <div class="footer-item ubicacion">
+            <h3>Estamos Ubicados En:</h3>
+            <p>Vereda Alto San Isidro</p>
+        </div>
+        
+        <!-- Apartado 4: Acerca de la Kumbre -->
+        <div class="footer-item acerca-de">
+            <h3>Acerca de la Kumbre</h3>
+            <ul>
+                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                <li><a href="{% url 'sugerencias' %}">Sugerencias</a></li>
+                <li><a href="{% url 'cabanas' %}">Cabañas</a></li>
+                <li><a href="{% url 'restricciones' %}">Restricciones</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script src="{% static 'js/base.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script src="{% static 'js/protection.js' %}"></script>
+
+<!-- En tu base.html, antes del </body> -->
+<script>
+// Recargar páginas que vienen del caché para actualizar tokens CSRF
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+</script>
+<script>
+    AOS.init({
+      delay: 200,  // Agrega un retraso de 200ms a todas las animaciones
+      duration: 1000, // Duración de 1s en todas las animaciones
+      once: true // La animación ocurre solo una vez
+    });
+  </script>
+  <script>
+    AOS.init({
+      delay: 200,  // Agrega un retraso de 200ms a todas las animaciones
+      duration: 1000, // Duración de 1s en todas las animaciones
+      once: true // La animación ocurre solo una vez
+    });
+  </script>
+
+<style>
+    @media (max-width: 768px) {
+      .swal-mobile-container {
+        z-index: 9999;
+        margin-top: 0 !important;
+      }
+      .swal2-popup {
+        font-size: 0.8rem !important;
+        max-width: 90vw;
+      }
+    }
+  </style>
+  
+{% if messages %}
+{% for m in messages %}
+    <script>
+        Swal.fire({
+  "text": "{{ m }}",
+  width: 600,
+  padding: "3em",
+  color: "#716add",
+});
+    </script>
+{% endfor %}
+{% endif %}
+</body>
+</html>
+

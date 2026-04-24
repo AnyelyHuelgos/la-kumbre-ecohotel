@@ -1,0 +1,474 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Spots{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/galeria.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spots Fotográficos de la Kumbre</title>
+    <style>
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+
+        }
+        
+        .header1 {
+        margin-top: 30px;
+        text-align: center;
+        margin-bottom: 3rem;
+        animation: fadeIn 1s ease-in-out;
+    }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    h1 {
+  margin: 10px auto 30px auto;
+  font-size: 3em;
+  text-align: center;
+  color: #9bf5cc;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+  letter-spacing: 2px; 
+  padding-bottom: 15px;
+}
+
+h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 4px;
+  background: linear-gradient(to right, #80af9b, #3a7158);
+  border-radius: 2px;
+}
+
+        
+        .gallery-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .spot {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            height: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .spot:hover {
+            transform: translateY(-10px);
+        }
+        
+        .spot h2 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .spot h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #ffb347, #ffcc33);
+        }
+        
+        .spot p {
+            color: #e0e0e0;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .images-grid {
+            display: grid;
+            height: 400px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .images-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+        }
+        
+        @media (max-width: 480px) {
+            .images-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .image-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            height: 320px;
+            background-color: #555;
+            transition: transform 0.3s ease;
+        }
+        
+        .image-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+        
+        .image-item:hover img {
+            filter: brightness(1.2);
+        }
+        
+        /* Modal estilos */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow: auto;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            max-width: 80%;
+            max-height: 80%;
+            margin: auto;
+            animation: zoom 0.3s ease;
+        }
+        
+        @keyframes zoom {
+            from {transform: scale(0)}
+            to {transform: scale(1)}
+        }
+        
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 5px;
+        }
+        
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: #ff6b6b;
+        }
+        /* Media queries for responsive design */
+
+/* Large screens (1200px and below) */
+@media (max-width: 1200px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+    
+    .header1 h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Medium screens (992px and below) */
+@media (max-width: 992px) {
+    .header1 h1 {
+        font-size: 2.2rem;
+    }
+    
+    .spot h2 {
+        font-size: 1.6rem;
+    }
+    
+    .images-grid {
+        height: auto;
+    }
+    
+    .image-item {
+        height: 250px;
+    }
+}
+
+/* Tablets (768px and below) */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .header1 {
+        margin-bottom: 2rem;
+    }
+    
+    .header1 h1 {
+        font-size: 2rem;
+    }
+    
+    .gallery-container {
+        gap: 30px;
+    }
+    
+    .spot {
+        padding: 20px;
+    }
+    
+    .images-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .image-item {
+        height: 200px;
+    }
+    
+    .modal-content {
+        max-width: 90%;
+    }
+}
+
+/* Small tablets and large phones (576px and below) */
+@media (max-width: 576px) {
+    .header1 h1 {
+        font-size: 1.8rem;
+    }
+    
+    .spot h2 {
+        font-size: 1.4rem;
+    }
+    
+    .spot p {
+        font-size: 0.9rem;
+    }
+    
+    .gallery-container {
+        gap: 25px;
+    }
+}
+
+/* Mobile phones (480px and below) */
+@media (max-width: 480px) {
+    .header1 {
+        margin-top: 20px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .header1 h1 {
+        font-size: 1.6rem;
+    }
+    
+    .spot {
+        padding: 15px;
+    }
+    
+    .images-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .image-item {
+        height: 220px;
+    }
+    
+    .spot h2 {
+        font-size: 1.3rem;
+    }
+    
+    .close {
+        top: 10px;
+        right: 15px;
+        font-size: 30px;
+    }
+    
+    .modal-content {
+        max-width: 95%;
+    }
+}
+
+/* Extra small devices (320px and below) */
+@media (max-width: 320px) {
+    .header1 h1 {
+        font-size: 1.4rem;
+    }
+    
+    .spot h2 {
+        font-size: 1.2rem;
+    }
+    
+    .spot p {
+        font-size: 0.85rem;
+    }
+    
+    .image-item {
+        height: 180px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header1">
+            <h1>Spots Fotograficos</h1>
+        </div>
+        
+        <div class="gallery-container">
+            <!-- Spot 1 -->
+            <div class="spot">
+                <h2>Spot Carro</h2>
+                <p>"Aquí es donde los recuerdos se quedan para siempre. Sonríe, respira y captura este momento que nunca olvidarás."</p>
+                    <div class="images-grid">
+                    <div class="image-item" onclick="openModal('mirador1')">
+                        <img src="{% static 'img/Carritosprot123.jpg' %}" alt="Mirador Panorámico al amanecer">
+                    </div>
+                    <div class="image-item" onclick="openModal('mirador2')">
+                        <img src="{% static 'img/carro2.webp' %}" alt="Vista panorámica de la ciudad">
+                    </div>
+                    <div class="image-item" onclick="openModal('mirador3')">
+                        <img src="{% static 'img/carro3.webp' %}" alt="Atardecer desde el mirador">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Spot 2 -->
+            <div class="spot">
+                <h2>Spot Nidos </h2>
+                <p>"Dicen que una imagen vale más que mil palabras. Desde este lugar especial, la tuya contará historias 
+                    de aventuras, descubrimientos y sonrisas."</p>
+                    <div class="images-grid">
+                    <div class="image-item" onclick="openModal('cascada1')">
+                        <img src="{% static 'img/nido1.webp' %}" alt="Cascada principal">
+                    </div>
+                    <div class="image-item" onclick="openModal('cascada2')">
+                        <img src="{% static 'img/nidos2.webp' %}" alt="Detalle de agua cristalina">
+                    </div>
+                    <div class="image-item" onclick="openModal('cascada3')">
+                        <img src="{% static 'img/nidos3.webp' %}" alt="Vista completa del entorno">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Spot 3 -->
+            <div class="spot">
+                <h2>Spot Silla Colgante</h2>
+                <p>"La magia de este lugar ahora forma parte de tu historia. Llévate este momento contigo y compártelo con quienes más quieres."</p>
+                <div class="images-grid">
+                    <div class="image-item" onclick="openModal('piedras1')">
+                        <img src="{% static 'img/silla1.webp' %}" alt="Formación rocosa principal">
+                    </div>
+                    <div class="image-item" onclick="openModal('piedras2')">
+                        <img src="{% static 'img/silla2.webp' %}" alt="Detalle de texturas rocosas">
+                    </div>
+                    <div class="image-item" onclick="openModal('piedras3')">
+                        <img src="{% static 'img/silla3.webp' %}" alt="Vista panorámica del jardín">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para ampliar imágenes -->
+    <div id="imageModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Imagen ampliada">
+        </div>
+    </div>
+    
+    <script>
+        // Objetos con rutas de las imágenes
+        const images = {
+            mirador1: "{% static 'img/Carritosprot123.jpg' %}",
+            mirador2: "{% static 'img/carro2.webp' %}",
+            mirador3: "{% static 'img/carro3.webp' %}",
+            cascada1: "{% static 'img/nido1.webp' %}",
+            cascada2: "{% static 'img/nidos2.webp' %}",
+            cascada3: "{% static 'img/nidos3.webp' %}",
+            piedras1: "{% static 'img/silla1.webp' %}",
+            piedras2: "{% static 'img/silla2.webp' %}",
+            piedras3: "{% static 'img/silla3.webp' %}",
+        };
+        
+        // Modal para ampliar imágenes
+        const modal = document.getElementById("imageModal");
+        const modalImg = document.getElementById("modalImage");
+        
+        function openModal(imageId) {
+            modal.classList.add("active");
+            modalImg.src = images[imageId];
+            document.body.style.overflow = "hidden"; // Prevenir scroll
+        }
+        
+        function closeModal() {
+            modal.classList.remove("active");
+            document.body.style.overflow = "auto"; // Restaurar scroll
+        }
+        
+        // Cerrar modal al hacer clic fuera de la imagen
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+        
+        // Cerrar modal con la tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+{% endblock %}

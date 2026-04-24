@@ -1,0 +1,1148 @@
+/* ==== GENERAL STYLES ==== */
+:root {
+    --primary-color: #32CD32;
+    --secondary-color: #e9ac5c;
+    --accent-color: #066344;
+    --light-color: #c3fcca;
+    --dark-color: #21322a;
+    --gradient-primary: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    --gradient-secondary: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+    --transition-fast: all 0.3s ease;
+    --transition-medium: all 0.5s ease;
+    --transition-slow: all 0.8s ease;
+    --shadow-small: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 6px 25px rgba(91, 224, 157, 0.3);
+    --shadow-large: 0 10px 35px rgba(91, 224, 157, 0.5);
+    --border-radius-small: 10px;
+    --border-radius-medium: 20px;
+    --border-radius-large: 30px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: auto;
+}
+
+/* Section styling */
+.section-header {
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    z-index: 10;
+}
+
+.section-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+}
+
+.divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.divider span {
+    width: 80px;
+    height: 4px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+    position: relative;
+}
+
+.divider span::before, .divider span::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.divider span::before {
+    left: -15px;
+}
+
+.divider span::after {
+    right: -15px;
+}
+
+/* Button Styles */
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 30px;
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-small);
+    transition: var(--transition-fast);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: skewX(-30deg);
+    transition: var(--transition-medium);
+    z-index: -1;
+}
+
+.cta-button:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-medium);
+}
+
+.cta-button:hover::before {
+    left: 100%;
+}
+
+.cta-button i {
+    margin-left: 10px;
+    transition: var(--transition-fast);
+}
+
+.cta-button:hover i {
+    transform: translateY(3px);
+}
+
+.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 25px;
+    background: transparent;
+    color: var(--accent-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.secondary-button:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.secondary-button i {
+    margin-left: 10px;
+    transition: var(--transition-fast);
+}
+
+.secondary-button:hover i {
+    transform: translateX(5px);
+}
+
+/* ==== HERO SECTION ==== */
+.hero-container {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    background-image: url('/static/img/fon1.webp    ');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(33, 50, 42, 0.4);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.hero-content h1 {
+    color: var(--light-color);
+    font-size: clamp(1.8rem, 5vw, 4rem);
+    font-weight: 700;
+    max-width: 900px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.button-wrapper {
+    margin-top: 20px;
+}
+
+/* ==== NOSOTROS SECTION ==== */
+.nosotros-section {
+    padding: 100px 0;
+    background: #f9f9f9;
+    position: relative;
+    overflow: visible; /* Changed from hidden to ensure content visibility */
+    height: auto; /* Changed from fixed height */
+    min-height: 600px; /* Added min-height instead */
+}
+
+.nosotros-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 300px;
+    background: rgba(91, 224, 157, 0.1);
+    border-radius: 50%;
+    transform: translate(150px, -150px);
+    z-index: 1; /* Changed from -1 to ensure proper stacking */
+}
+
+.nosotros-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    height: 200px;
+    background: rgba(233, 172, 92, 0.1);
+    border-radius: 50%;
+    transform: translate(-100px, 100px);
+    z-index: 1; /* Changed from -1 to ensure proper stacking */
+}
+
+.nosotros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    position: relative;
+    z-index: 2; /* Increased z-index to ensure it's above background elements */
+    height: auto; /* Auto height instead of fixed */
+    width: 100%;
+    max-width: 100%;
+}
+
+.content-card, .image-card {
+    background: white;
+    z-index: 5;
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition-medium);
+    height: auto; /* Allow content to determine height */
+    min-height: 300px; /* Ensure minimum height */
+}
+
+.content-card:hover, .image-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-large);
+}
+
+/* Ajuste para hacer el video más grande */
+.video-card {
+    background: white;
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition-medium);
+    height: 450px; /* Fixed height for video card */
+    display: flex;
+    flex-direction: column;
+    z-index: 5; /* Ensure it's above background elements */
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    flex: 1;
+}
+
+/* Aseguramos que el iframe se ajuste correctamente */
+.youtube-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.youtube-thumbnail {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.youtube-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-medium);
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition-fast);
+}
+
+.play-button i {
+    color: var(--accent-color);
+    font-size: 24px;
+    transition: var(--transition-fast);
+}
+
+.youtube-container:hover .youtube-thumbnail img {
+    transform: scale(1.05);
+}
+
+.youtube-container:hover .play-button {
+    background: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.youtube-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Content Card Styling */
+.content-card {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mission-vision-tabs {
+    margin-bottom: 30px;
+}
+
+.tab-header {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #888;
+    transition: var(--transition-fast);
+    position: relative;
+}
+
+.tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient-primary);
+    transition: var(--transition-medium);
+}
+
+.tab-btn:hover {
+    color: var(--accent-color);
+}
+
+.tab-btn.active {
+    color: var(--accent-color);
+}
+
+.tab-btn.active::after {
+    width: 100%;
+}
+
+.tab-content {
+    position: relative;
+}
+
+.tab-pane {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.tab-pane p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #666;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.cta-wrapper {
+    margin-top: auto;
+    text-align: center;
+}
+
+/* Image Card Styling */
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 350px;
+    overflow: hidden;
+}
+
+.image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-medium);
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: linear-gradient(to top, rgba(6, 99, 68, 0.8), transparent);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 20px;
+    transition: var(--transition-medium);
+    opacity: 0;
+}
+
+.overlay-content h3 {
+    color: white;
+    text-align: center;
+    transform: translateY(20px);
+    transition: var(--transition-medium);
+}
+
+.image-wrapper:hover img {
+    transform: scale(1.1);
+}
+
+.image-wrapper:hover .image-overlay {
+    height: 40%;
+    opacity: 1;
+}
+
+.image-wrapper:hover .overlay-content h3 {
+    transform: translateY(0);
+}
+
+
+/* Card styles */
+.card {
+    margin: 20px auto;
+    width: 350px;
+    padding: 30px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 24px rgba(152, 225, 190, 0.6);
+    text-align: center;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 5;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.title {
+    font-size: 24px;
+    color: #444;
+    margin-bottom: 20px;
+    font-weight: 550;
+}
+
+.description {
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.plant-icon {
+    margin-bottom: 20px;
+}
+
+.button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: linear-gradient(to right, #98e1be, #60bfa3);
+    color: black;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(96, 191, 163, 0.4);
+}
+
+/* ==== UBICACION SECTION ==== */
+.ubicacion-section {
+    padding: 50px 0;
+    background: #f9f9f9;
+    position: relative;
+    overflow: visible; /* Changed from hidden to ensure content visibility */
+    min-height: 400px; /* Ensure minimum height */
+}
+
+.ubicacion-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 300px;
+    background: rgba(91, 224, 157, 0.1);
+    border-radius: 50%;
+    transform: translate(150px, -150px);
+    z-index: 1; /* Changed from 0 */
+}
+
+.ubicacion-section::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    height: 200px;
+    background: rgba(233, 172, 92, 0.1);
+    border-radius: 50%;
+    transform: translate(-100px, 100px);
+    z-index: 1; /* Changed from 0 */
+}
+
+/* Responsive grid */
+.ubicacion-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    position: relative;
+    z-index: 10; /* Increased to ensure visibility */
+    margin-top: 10px;
+}
+
+/* Asegurar que los elementos mantengan alturas similares */
+.info-card, .map-card, .video-highlight-card {
+    background: white;
+    border-radius: var(--border-radius-medium);
+    overflow: hidden;
+    box-shadow: var(--shadow-medium);
+    transition: var(--transition-medium);
+    height: auto;
+    min-height: 400px;
+    z-index: 5; /* Ensure it's above background elements */
+}
+
+.info-card:hover, .map-card:hover, .video-highlight-card:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-large);
+}
+
+/* Info Card Styling */
+.info-card .card-content {
+    padding: 30px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.icon-wrapper {
+    margin-bottom: 20px;
+}
+
+.icon-wrapper i {
+    font-size: 40px;
+    color: var(--accent-color);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.info-card h3 {
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.info-card p {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.logo-animation {
+    margin-top: 20px;
+}
+
+.logo-animation img {
+    width: 150px;
+    height: auto;
+    transition: var(--transition-medium);
+}
+
+.floating {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Map Card Styling */
+.map-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.map-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: var(--border-radius-medium);
+    transition: var(--transition-medium);
+}
+
+/* Video Highlight Card Styling */
+.video-highlight-card .card-content {
+    padding: 30px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(to right bottom, rgba(91, 224, 157, 0.1), rgba(233, 172, 92, 0.1));
+}
+
+.video-highlight-card h3 {
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    position: relative;
+    display: inline-block;
+}
+
+.video-highlight-card h3::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 25%;
+    width: 50%;
+    height: 3px;
+    background: var(--gradient-primary);
+}
+
+/* New Video Container Styling */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+    border-radius: var(--border-radius-small);
+}
+
+.video-thumbnail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.video-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.video-thumbnail:hover img {
+    transform: scale(1.05);
+}
+
+.play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    background-color: rgba(var(--accent-color-rgb, 91, 224, 157), 0.8);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.play-button i {
+    color: white;
+    font-size: 30px;
+    margin-left: 5px; /* Slight adjustment for the play icon */
+}
+
+.play-button:hover {
+    background-color: var(--accent-color);
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    object-fit: cover;
+}
+
+/* Fix any duplicate nested card issues */
+.video-highlight-card .video-highlight-card {
+    box-shadow: none;
+    min-height: 0;
+    height: auto;
+}
+
+/* Media Queries for better responsiveness */
+@media (max-width: 768px) {
+    .play-button {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .play-button i {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card{
+        width: 90%;
+        padding: 20px;
+    }
+    .play-button {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .play-button i {
+        font-size: 20px;
+    }
+}
+/* ==== MEDIA QUERIES ==== */
+/* Container width control */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+/* For smaller mobile devices */
+@media (max-width: 576px) {
+    .container {
+        width: 90%;
+        padding: 0;
+    }
+    
+    .button-wrapper {
+        margin-top: 10px;
+    }
+    
+    .cta-button {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    
+    .nosotros-section, .ubicacion-section, .gallery-section {
+        padding: 40px 0;
+    }
+    
+    .nosotros-grid, .ubicacion-grid, .gallery-grid {
+        gap: 20px;
+        grid-template-columns: 1fr; /* Force single column */
+        min-height: unset; /* Elimina restricciones de altura */
+    }
+    
+    .section-title {
+        font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+    
+    .tab-header {
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .tab-btn {
+        padding: 8px 15px;
+        text-align: center;
+    }
+    
+    .tab-btn::after {
+        left: 10%;
+        width: 80%;
+    }
+    
+    .gallery-item {
+        height: 200px;
+    }
+    
+    .video-card, .content-card, .info-card, .map-card, .video-highlight-card {
+        min-height: 350px; /* Aumentado de 250px */
+    }
+    
+    /* Específicamente para contenido de misión y visión */
+    .content-card.mission-card, .content-card.vision-card {
+        min-height: 400px; /* Altura específica para misión/visión */
+    }
+    
+    .video-wrapper, .video-highlight-wrapper {
+        padding-bottom: 56.25%;
+    }
+}
+
+/* Regla general para asegurar que las tarjetas de misión y visión siempre sean visibles */
+.content-card.mission-card, .content-card.vision-card {
+    min-height: 350px;
+}
+
+/* Specific breakpoint at 600px */
+@media (max-width: 600px) {
+    .container {
+        width: 90%;
+    }
+    .nosotros-section {
+        height: auto; /* Changed from fixed 1200px */
+        min-height: 1200px; /* Use min-height instead of fixed height */
+    }
+    
+    .nosotros-grid, .ubicacion-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .content-card, .video-card {
+        height: auto; /* Allow content to determine height */
+        min-height: 450px; /* Set minimum height */
+    }
+    
+    .content-card.mission-card, .content-card.vision-card {
+        height: auto; /* Ajuste automático a contenido */
+        min-height: 400px; /* Altura mínima garantizada */
+    }
+}
+
+/* For tablets and smaller desktops */
+@media (min-width: 577px) and (max-width: 991px) {
+    .container {
+        width: 95%;
+    }
+    
+    /* Two column layout for medium screens */
+    .nosotros-grid, .ubicacion-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .ubicacion-grid .video-highlight-card {
+        grid-column: span 2; /* Make video span across 2 columns */
+    }
+    
+    .image-wrapper {
+        min-height: 300px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    /* Asegurar que las tarjetas de misión y visión se vean correctamente en tablets */
+    .content-card.mission-card, .content-card.vision-card {
+        min-height: 380px;
+    }
+}
+
+/* For larger screens */
+@media (min-width: 992px) {
+    .ubicacion-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Altura adecuada para pantallas grandes */
+    .content-card.mission-card, .content-card.vision-card {
+        min-height: 400px;
+    }
+}
+
+/* Fix for Safari and iOS issues */
+@supports (-webkit-touch-callout: none) {
+    /* CSS specific to iOS devices */
+    .hero-container {
+        background-attachment: scroll;
+    }
+    
+    .parallax-section {
+        background-attachment: scroll;
+    }
+}
+
+/* Ocultar las bolitas solo en pantallas pequeñas */
+@media (max-width: 2200px) {
+    .nosotros-section::before, 
+    .nosotros-section::after,
+    .ubicacion-section::before,
+    .ubicacion-section::after {
+        display: none;
+    }
+}
+
+/* iPhone-specific fixes  */
+@media screen and (max-width: 812px) and (-webkit-min-device-pixel-ratio: 2) {
+    .container {
+        width: 90%;
+        padding: 0;
+    }
+    
+    .hero-container {
+        height: 80vh; /* Adjusted for iPhone */
+        background-attachment: scroll;
+    }
+    
+    .hero-content h1 {
+        font-size: clamp(1.5rem, 4vw, 2.8rem);
+    }
+    
+    .button-wrapper {
+        margin-top: 0; /* Reduced spacing for iPhone */
+    }
+    
+    .cta-button, .secondary-button {
+        padding: 10px 20px; /* Smaller buttons for iPhone */
+        font-size: 0.9rem;
+    }
+    
+    .nosotros-section, .ubicacion-section, .gallery-section {
+        padding: 40px 0; /* Less padding for iPhone */
+    }
+    
+    .video-wrapper, .video-highlight-wrapper {
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    }
+    
+    .tab-pane p {
+        font-size: 1rem; /* Smaller font for iPhone */
+    }
+    
+    .info-card p {
+        font-size: 1rem;
+    }
+    
+    .map-wrapper iframe {
+        min-height: 300px; /* Smaller map for iPhone */
+    }
+    
+    .parallax-section {
+        height: 250px; /* Shorter parallax section for iPhone */
+        background-attachment: scroll;
+    }
+    
+    /* Ensure buttons and interactive elements have enough touch area */
+    .tab-btn, .cta-button, .secondary-button, .play-button {
+        min-height: 44px; /* Apple's recommended minimum touch target size */
+    }
+    
+    /* Fix notch issues */
+    .hero-content {
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+    
+    /* Asegurar que las tarjetas de misión y visión se vean en iPhone */
+    .content-card.mission-card, .content-card.vision-card {
+        min-height: 420px; /* Altura extra para compensar pantallas pequeñas */
+        overflow-y: auto; /* Permitir scroll si el contenido es realmente grande */
+    }
+}
+
+/* Animation Classes */
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInUp {
+    animation-name: fadeInUp;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -40px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInDown {
+    animation-name: fadeInDown;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translate3d(-40px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInLeft {
+    animation-name: fadeInLeft;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translate3d(40px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInRight {
+    animation-name: fadeInRight;
+}
+
+/* Additional animations for elements */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+.bounce {
+    animation: bounce 2s infinite;
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+.zoomIn {
+    animation: zoomIn 1s;
+}
+
+/* Color animation for background elements */
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.gradient-shift {
+    background: linear-gradient(270deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+    background-size: 600% 600%;
+    animation: gradientShift 10s ease infinite;
+}

@@ -1,0 +1,650 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cabaña Tabi{% endblock %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="{% static 'styles/cabanacafetal.css' %}">
+
+
+
+    <section id="inicio" class="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1>Bienvenidos a La Cabaña Cafetal</h1>
+            <p>Un refugio de paz y confort en medio de la naturaleza</p>
+            <button class="reservar">
+                <a href="{% url 'reservas' %}?cabana_id=13">Reservar Cabaña Cafetal </a>
+            </button>
+        </div>
+        
+        <div class="scroll-down">
+            <a href="">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+        <div class="slide-container">
+            <div class="slider">
+                <div class="slide active">
+                    <img src="/static/img/cafetalbuena.jpg" alt="Cabaña exterior">
+                </div>
+                <div class="slide">
+                    <img src="{% static 'img/camacafetal.webp' %}"  alt="Vista panorámica">
+                </div>
+                <div class="slide">
+                    <img src="/static/img/cafetal11.jpg" alt="Interior acogedor">
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+                <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="slider-dots">
+                <span class="dot active" data-index="0"></span>
+                <span class="dot" data-index="1"></span>
+                <span class="dot" data-index="2"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Instalaciones y Servicios -->
+    <section id="instalaciones" class="features">
+        <h2 class="section-title" data-aos="fade-up">Tu Reserva incluye</h2>
+        <div class="container">
+            <div class="features-container">
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-coffee"></i>
+                    </div>
+                    <h3>Cafe </h3>
+                    <p>Dos Cafes de bienvenida</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-wine-bottle"></i>
+                    </div>
+                    <h3>Vino</h3>
+                    <p>1 botella de vino</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>Fogata</h3>
+                    <p>Fogata y malvaviscos</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Desayunos</h3>
+                    <p> Dos desayunos</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-parking"></i>
+                    </div>
+                    <h3>Parqueadero privado</h3>
+                    <p>Amplio Parqueadero</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-grip-horizontal"></i> 
+                    </div>
+                    <h3>Maya catamarán</h3>
+                    <p>Cuenta con Maya catamarán</p>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="features-container">
+                <div class="feature-card" data-aos="fade-up">
+                    <div class="feature-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <h3>WiFi </h3>
+                    <p>Conexión WiFi disponible para los huéspedes</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-hot-tub"></i>
+                    </div>
+                    <h3>Ducha</h3>
+                    <p>Ducha en la cabaña</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Sourvenir</h3>
+                    <p>Un detalle de La Kumbre</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Nevera</h3>
+                    <p> Nevera surtida con productos refrigerados disponibles</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-binoculars"></i>
+                    </div>
+                    <h3>Mirador</h3>
+                    <p>Ingreso al Mirador</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <h3>Parlatente</h3>
+                    <p>Parlante bluetooth</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galería -->
+    <section id="galeria" class="gallery">
+        <h2 class="section-title1" data-aos="fade-up">Galería de Imágenes</h2>
+        <div class="container">
+            <div class="gallery-container">
+                <div class="gallery-item" data-aos="zoom-in">
+                    <img src="/static/img/cafetalbuena.jpg" alt="Exterior de la cabaña">
+                    <div class="overlay">
+                        <span>Exterior</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="/static/img/mayacafetal.webp" alt="Cocina">
+                    <div class="overlay">
+                        <span>Maya catamarán</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="300">
+                    <img src="/static/img/camacafetal.webp" alt="Dormitorio principal">
+                    <div class="overlay">
+                        <span>Dormitorio principal</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="400">
+                    <img src="/static/img/pieza2cafetal1.webp" alt="Segundo dormitorio">
+                    <div class="overlay">
+                        <span>Segunda habitación</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="500">
+                    <img src="/static/img/cafetal11.jpg" alt="Baño">
+                    <div class="overlay">
+                        <span>Baño</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="100">
+                    <img src="/static/img/vinocafetal.webp" alt="Sala de estar">
+                    <div class="overlay">
+                        <span>Vino</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="600">
+                    <img src="/static/img/terrazacafetal.webp" alt="Terraza">
+                    <div class="overlay">
+                        <span>Terraza</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="700">
+                    <img src="/static/img/sillacafetal.webp" alt="Jacuzzi">
+                    <div class="overlay">
+                        <span>Decoración</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="800">
+                    <img src="/static/img/vistacafetal.webp" alt="Vista al bosque">
+                    <div class="overlay">
+                        <span>Vistas </span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="900">
+                    <img src="/static/img/camaprincipalcafetal.webp" alt="Camino de acceso">
+                    <div class="overlay">
+                        <span>Camas</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="1000">
+                    <img src="/static/img/pieza2cafetal.webp" alt="Área de fogata">
+                    <div class="overlay">
+                        <span>Cama Secundaria</span>
+                    </div>
+                </div>
+                <div class="gallery-item" data-aos="zoom-in" data-aos-delay="1100">
+                    <img src="/static/img/desayunogeisha.webp" alt="Amanecer desde la cabaña">
+                    <div class="overlay">
+                        <span>Desayuno</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" id="galleryModal">
+                <span class="close">&times;</span>
+                <img class="modal-content" id="modalImg">
+                <div class="modal-controls">
+                    <button class="modal-prev"><i class="fas fa-chevron-left"></i></button>
+                    <button class="modal-next"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Habitaciones y Espacios -->
+    <section id="habitaciones" class="rooms">
+        <h2 class="section-title12" data-aos="fade-up">La cabaña esta equipada con:</h2>
+        <div class="container">
+            <div class="rooms-container">
+                
+                <div class="room-card" data-aos="fade-left">
+                    <div class="room-image">
+                        <img src="/static/img/cafetalbuena.jpg" alt="Sala de estar">
+                    </div>
+                    <div class="room-info">
+                        <h3>Cabaña</h3>
+                        <p>
+                            Esta cabaña familiar cuenta con capacidad ideal para parejas o pequeñas familias, brindando un espacio cálido y confortable.</p>
+                        <ul>
+                            <li><i class="fas fa-utensils"></i> Nevera</li>
+                            <li><i class="fas fa-coffee"></i> Cafetera</li>
+                            <li><i class="fas fa-couch"></i> Silla Comoda</li>
+                            <li> <i class="fas fa-grip-horizontal"></i> Malla catamarán</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="room-card" data-aos="fade-right">
+                    <div class="room-image">
+                        <img src="/static/img/camacafetal.webp" alt="Dormitorio principal">
+                    </div>
+                    <div class="room-info">
+                        <h3>Habitaciones</h3>
+                        <p>1 cama de 2×2 m y 1 cama de 1.40 m.</p>
+                        <ul>
+                            <li><i class="fas fa-bed"></i>Dos camas</li>
+                            <li><i class="fas fa-hot-tub"></i> Toallas</li>
+                            <li><i class="fas fa-shopping-basket"></i> Tendidos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Precios -->
+    <section id="precios" class="pricing">
+        <h2 class="section-title" data-aos="fade-up">Precios</h2>
+        <div class="container">
+            
+            <div class="pricing-container">
+                <div class="price-card" data-aos="flip-left">
+                    <div class="price-header">
+                        <h3>Entre Semana</h3>
+                        <div class="price">
+                            <span class="amount">$250.000</span>
+                            <span class="period">por noche (Pareja)</span>
+                        </div>
+                    </div>
+                    <div class="price-features">
+                        <ul>
+                            <li>Domingo(si el lunes no es festivo), lunes, martes, miercoles, jueves.</li>
+                            <li>Persona adicional $60.000</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="price-card featured" data-aos="flip-up">
+                    <div class="price-header">
+                        <h3>Fin de Semana</h3>
+                        <div class="price">
+                            <span class="amount">$300.000</span>
+                            <span class="period">por noche(Pareja)</span>
+                        </div>
+                    </div>
+                    <div class="price-features">
+                        <ul>
+                            <li>Viernes, sabado y el domingo (si el lunes es festivo)</li>
+                            <li>Persona adicional $80.000</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="price-card featured" data-aos="flip-up">
+                    <div class="price-header">
+                        <h3>Dias Festivos</h3>
+                        <div class="price">
+                            <span class="amount">$300.000</span>
+                            <span class="period">por noche(Pareja)</span>
+                        </div>
+                    </div>
+                    <div class="price-features">
+                        <ul>
+                            <li></li>
+                            <li>Persona adicional $80.000</li>
+                            <li>Aplica para noche a amanecer con dia festivo</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Políticas -->
+    <section id="politicas" class="policies">
+        <h2 class="section-title1" data-aos="fade-up">Políticas de Reserva</h2>
+        <div class="container">
+            
+            <div class="policies-container">
+                <div class="policy-card" data-aos="fade-up">
+                    <h3><i class="fas fa-check-circle"></i> Reservas</h3>
+                    <p>Para confirmar tu reserva, se requiere un depósito del 70% del monto total. El saldo restante deberá ser pagado el dia de la reserva.</p>
+                </div>
+                <div class="policy-card" data-aos="fade-up" data-aos-delay="100">
+                    <h3><i class="fas fa-times-circle"></i> Cancelaciones</h3>
+                    <p>Para la modificación o cancelación de una reserva debe ser con un mínimo de ocho días de anticipación (no se hace devolución de dinero)</p>
+                </div>
+                <div class="policy-card" data-aos="fade-up" data-aos-delay="200">
+                    <h3><i class="fas fa-clock"></i> Check-in y Check-out</h3>
+                    <p>Check-in: 04:00 p.m - 09:00 p.m. Check-out: hasta las 01:00 p.m.</p>
+                </div>
+                <div class="policy-card" data-aos="fade-up" data-aos-delay="200">
+                    <h3> <i class="fas fa-utensils"></i> Cancelación comidas</h3>
+                    <p>Si se hace un reserva con servicio de restaurante y desea cancelar la comida lo puede hacer directamente comunicandose
+                         con el administrador minimo con 72 horas de anticipación.</p>
+                </div>
+            </div>
+            
+        </div>
+        <div class="policies-download" data-aos="zoom-in">
+            <h3>Descarga nuestras políticas completas</h3>
+            <p>Para más detalles sobre nuestras políticas, descarga el documento completo.</p>
+            <a href="{% static 'videos/politicasLaKumbre.pdf' %}" class="btn-download boton-animado" target="_blank">
+                <i class="fas fa-file-pdf"></i> Descargar PDF
+            </a>
+        </div>
+    </section>
+    <div id="boton-arriba">↑</div>
+
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar AOS (Animate on Scroll)
+    AOS.init({
+        duration: 600,
+        easing: 'ease-in-out',
+        once: true,
+        mirror: false
+    });
+
+    // Variables globales
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const totalSlides = slides.length;
+    let slideInterval;
+
+    // Slider de Hero
+    function showSlide(index) {
+        // Eliminar clase active de todos los slides y dots
+        slides.forEach(slide => slide.classList.remove('active'));
+        dots.forEach(dot => dot.classList.remove('active'));
+        
+        // Añadir clase active al slide y dot actual
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        
+        currentSlide = index;
+    }
+
+    function nextSlide() {
+        let nextIndex = currentSlide + 1;
+        if (nextIndex >= totalSlides) {
+            nextIndex = 0;
+        }
+        showSlide(nextIndex);
+    }
+
+    function prevSlide() {
+        let prevIndex = currentSlide - 1;
+        if (prevIndex < 0) {
+            prevIndex = totalSlides - 1;
+        }
+        showSlide(prevIndex);
+    }
+
+    // Iniciar slider automático
+    function startSlideInterval() {
+        slideInterval = setInterval(nextSlide, 2800);
+    }
+
+    // Detectar eventos de botones de slider
+    const nextBtn = document.querySelector('.next-btn');
+    const prevBtn = document.querySelector('.prev-btn');
+
+    if (nextBtn && prevBtn) {
+        nextBtn.addEventListener('click', function() {
+            clearInterval(slideInterval);
+            nextSlide();
+            startSlideInterval();
+        });
+
+        prevBtn.addEventListener('click', function() {
+            clearInterval(slideInterval);
+            prevSlide();
+            startSlideInterval();
+        });
+    }
+
+    // Detectar clicks en dots
+    dots.forEach(dot => {
+        dot.addEventListener('click', function() {
+            const slideIndex = parseInt(this.getAttribute('data-index'));
+            clearInterval(slideInterval);
+            showSlide(slideIndex);
+            startSlideInterval();
+        });
+    });
+
+    // Iniciar slider
+    startSlideInterval();
+
+    // Navegación responsive
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (hamburger) {
+        hamburger.addEventListener('click', function() {
+            navLinks.classList.toggle('open');
+            hamburger.classList.toggle('toggle');
+        });
+    }
+
+    // Añadir la clase toggle para animar las barras del hamburger
+    function toggleHamburger() {
+        const hamburgerBars = document.querySelectorAll('.hamburger div');
+        if (hamburgerBars.length > 0) {
+            hamburgerBars[0].style.transform = 'rotate(-45deg) translate(-5px, 6px)';
+            hamburgerBars[1].style.opacity = '0';
+            hamburgerBars[2].style.transform = 'rotate(45deg) translate(-5px, -6px)';
+        }
+    }
+
+    // Tabs para actividades
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Quitar active de todos los botones y paneles
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabPanes.forEach(pane => pane.classList.remove('active'));
+            
+            // Añadir active al botón clickeado
+            this.classList.add('active');
+            
+            // Mostrar el panel correspondiente
+            const tabId = this.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // Galería modal
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const modal = document.getElementById('galleryModal');
+    const modalImg = document.getElementById('modalImg');
+    const close = document.querySelector('.close');
+    const modalPrev = document.querySelector('.modal-prev');
+    const modalNext = document.querySelector('.modal-next');
+    let currentImgIndex = 0;
+
+    galleryItems.forEach((item, index) => {
+        item.addEventListener('click', function() {
+            currentImgIndex = index;
+            const imgSrc = this.querySelector('img').src;
+            modalImg.src = imgSrc;
+            modal.style.display = 'block';
+        });
+    });
+
+    close.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // Navegación en el modal
+    modalPrev.addEventListener('click', function() {
+        currentImgIndex--;
+        if (currentImgIndex < 0) {
+            currentImgIndex = galleryItems.length - 1;
+        }
+        modalImg.src = galleryItems[currentImgIndex].querySelector('img').src;
+    });
+
+    modalNext.addEventListener('click', function() {
+        currentImgIndex++;
+        if (currentImgIndex >= galleryItems.length) {
+            currentImgIndex = 0;
+        }
+        modalImg.src = galleryItems[currentImgIndex].querySelector('img').src;
+    });
+
+    // Botones de reserva para enlace externo
+    const reservarBtns = document.querySelectorAll('.btn-reservar-hero, .btn-price');
+    
+    reservarBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Redireccionar a la página de reservas externa
+            window.location.href = "https://tu-sistema-de-reservas.com";
+            // Alternativamente, puedes abrir en una nueva pestaña:
+            // window.open("https://tu-sistema-de-reservas.com", "_blank");
+        });
+    });
+
+    // Animación de scroll y header fixed
+    const header = document.querySelector('header');
+    
+    window.addEventListener('scroll', function() {
+        const scrollPosition = window.scrollY;
+        
+        if (scrollPosition > 100) {
+            header.classList.add('header-scrolled');
+        } else {
+            header.classList.remove('header-scrolled');
+        }
+    });
+
+    // Navegación smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            window.scrollTo({
+                top: target.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Cerrar el menú en dispositivos móviles
+        if (navLinks.classList.contains('open')) {
+            navLinks.classList.remove('open');
+            hamburger.classList.remove('toggle');
+        }
+    });
+    });
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            window.scrollTo({
+                top: target.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Cerrar el menú en dispositivos móviles
+        if (navLinks.classList.contains('open')) {
+            navLinks.classList.remove('open');
+            hamburger.classList.remove('toggle');
+        }
+    });
+});
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            window.scrollTo({
+                top: target.offsetTop - 80,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Cerrar el menú en dispositivos móviles
+        if (navLinks.classList.contains('open')) {
+            navLinks.classList.remove('open');
+            hamburger.classList.remove('toggle');
+        }
+    });
+});
+    });
+
+
+     // Obtener referencia al botón
+     const botonArriba = document.getElementById("boton-arriba");
+        
+        // Mostrar el botón cuando el usuario se desplaza hacia abajo 300px
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                botonArriba.style.display = "block";
+            } else {
+                botonArriba.style.display = "none";
+            }
+        };
+        
+        // Función para desplazarse hacia arriba cuando se hace clic en el botón
+        botonArriba.addEventListener("click", function() {
+            // Para navegadores modernos
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+            
+            // Para navegadores más antiguos
+            document.body.scrollTop = 0; // Para Safari
+            document.documentElement.scrollTop = 0; // Para Chrome, Firefox, IE y Opera
+        });
+    </script>
+
+{% endblock %}

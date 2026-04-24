@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Nosotros {% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/nosotro.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<!-- Hero Section -->
+<div class="hero-container">
+    <div class="hero-content animate__animated animate__fadeIn">
+        <h1 class="animate__animated animate__fadeInUp animate__delay-1s">"Un hermoso paraíso floral en medio de cafetales, en las montañas de Garzón- Huila"</h1>
+        <div class="button-wrapper animate__animated animate__fadeInUp animate__delay-2s">
+            <a href="#mision1" class="cta-button">
+                <span>Conócenos</span>
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </div> 
+</div>
+
+<!-- Nosotros Section -->
+<section class="nosotros-section" id="mision1">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title animate__animated animate__fadeIn">Nuestra Historia</h2>
+            <div class="divider"><span></span></div>
+        </div>
+        
+        <div class="nosotros-grid">
+            <div class="video-card" data-aos="fade-right">
+                <div class="video-wrapper">
+                    <div class="youtube-container" onclick="loadYoutubeVideo(this, '5-jUKkCitNo')">
+                        <div class="youtube-thumbnail">
+                            <img src="{% static 'img/entrada.jpg' %}" alt="Video de La Kumbre">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-card" data-aos="fade-up">
+                <div class="mission-vision-tabs">
+                    <div class="tab-header">
+                        <div class="tab-btn active" data-tab="mision-content">Misión</div>
+                        <div class="tab-btn" data-tab="vision-content">Visión</div>
+                    </div>
+                    
+                    <div class="tab-content">
+                        <div id="mision-content" class="tab-pane active">
+                            <p>La misión de la Kumbre del Huila es ofrecer una experiencia de hospedaje en armonía con la naturaleza, implementando prácticas ecoamigables que ayuden a fomentar la conciencia, educando a nuestros huéspedes, y brindar un servicio excepcional y de calidad.</p>
+                        </div>
+                        <div id="vision-content" class="tab-pane">
+                            <p>Nuestra visión para el año 2026 es visualizarnos como un referente en el territorio huilense, al liderar en el gremio hotelero, donde la sostenibilidad y el lujo se combinan en perfecta armonía.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta-wrapper">
+                    <a href="#ubicacion" class="secondary-button">
+                        <span>Ver más</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+  
+  
+<!-- Ubicación Section -->
+<section class="ubicacion-section" id="ubicacion">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title animate__animated animate__fadeIn">Cómo Llegar</h2>
+            <div class="divider"><span></span></div>
+        </div>
+        
+        <div class="ubicacion-grid">
+            <div class="info-card" data-aos="zoom-in-right">
+                <div class="card-content">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div> 
+                    <h3>¿Dónde nos encontramos?</h3>
+                    <p>Estamos ubicados en la vereda Alto san Isidro en Garzón Huila, a 14 kilometros del casco urbano del municipio.</p>
+                    <p>Disfruta de una experiencia inigualable y atesora momentos inolvidables, conoce todas las maravillas que la Kumbre tiene reservadas para ti.</p>
+                    
+                    <div class="logo-animation">
+                        <img src="{% static 'img/log1.png' %}" alt="Logo de La Kumbre" class="floating">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-card" data-aos="zoom-in">
+                <div class="map-wrapper">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6852.202804046733!2d-75.635397296715!3d2.1385539942101834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e24df0038594927%3A0xb51037d063378047!2sLa%20Kumbre%20del%20Huila!5e0!3m2!1ses!2sco!4v1747058501271!5m2!1ses!2sco" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+            <div class="video-highlight-card" data-aos="zoom-in-left">
+                <div class="card-content">
+                    <h3>Experiencias Inolvidables</h3>
+                    <div class="video-container">
+                        <!-- Thumbnail overlay with play button -->
+                        <div class="video-thumbnail" id="videoThumbnail">
+                            <img src="{% static 'img/entrada.jpg' %}" alt="Video de La Kumbre">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                        <!-- Hidden video that will be shown on click -->
+                        <video id="experienceVideo" preload="metadata">
+                            <source src="{% static 'videos/Como-llegar.mp4' %}" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+ <div class="card">
+    <div class="plant-icon">
+      <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#60bfa3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <path d="M12 8v6"></path>
+        <path d="M9 11h6"></path>
+      </svg>
+    </div>
+    <h1 class="title">Ayúdanos a Crecer</h1>
+    <p class="description">Tus ideas son valiosas para nosotros. Nos ayudan a mejorar y brindar un mejor servicio cada día.</p>
+    <a href="{% url 'sugerencias' %}" class="button">Envíanos una Sugerencia</a><br><br>
+    <a href="https://acortar.link/EIPKyk" class="button" target="_blank">Calificanos</a>
+</div>
+  
+
+
+<!-- Fix for the JavaScript duplication -->
+<script>
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const videoThumbnail = document.getElementById('videoThumbnail');
+    const video = document.getElementById('experienceVideo');
+    
+    if (videoThumbnail && video) {
+        console.log("Video elements found"); // Add this for debugging
+        
+        videoThumbnail.addEventListener('click', function() {
+            console.log("Thumbnail clicked"); // Add this for debugging
+            
+            // Hide thumbnail
+            videoThumbnail.style.display = 'none';
+            
+            // Show and play video
+            video.style.display = 'block';
+            video.controls = true; // Add controls to the video
+            
+            // Try playing the video with a try-catch to handle potential errors
+            try {
+                let playPromise = video.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(_ => {
+                        console.log("Video playing successfully");
+                    })
+                    .catch(error => {
+                        console.error("Error playing video:", error);
+                        // Show thumbnail again if video fails to play
+                        videoThumbnail.style.display = 'block';
+                        video.style.display = 'none';
+                    });
+                }
+            } catch(e) {
+                console.error("Error in play attempt:", e);
+            }
+        });
+        
+        // Reset video when it ends
+        video.addEventListener('ended', function() {
+            console.log("Video ended");
+            video.style.display = 'none';
+            videoThumbnail.style.display = 'block';
+        });
+    } else {
+        console.error("Could not find video elements!");
+    }
+});
+
+// Remove all the duplicate loadYoutubeVideo functions and keep only this one version
+function loadYoutubeVideo(container, videoId) {
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`);
+    iframe.setAttribute('frameborder', '0');
+    iframe.setAttribute('allowfullscreen', 'true');
+    iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    
+    container.innerHTML = '';
+    container.appendChild(iframe);
+    container.onclick = null; // Remove the onclick handler
+}
+
+// Keep the rest of your tab functionality as is
+document.addEventListener('DOMContentLoaded', function() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remove active class from all buttons and content
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            // Show corresponding content
+            const tabContent = document.getElementById(this.dataset.tab);
+            if(tabContent) {
+                tabContent.classList.add('active');
+            }
+        });
+    });
+    
+    // Ensure first tab is active by default
+    const firstTabBtn = document.querySelector('.tab-btn');
+    if(firstTabBtn) {
+        firstTabBtn.click();
+    }
+    
+    // Initialize AOS if available
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+    }
+    
+    
+    
+    // Smooth scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            const targetElement = document.querySelector(targetId);
+            
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 70,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

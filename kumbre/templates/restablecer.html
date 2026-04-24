@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}gastronomia{% endblock %}
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/restablecer.css' %}">
+
+<div class="container">
+    <div class="form-box login">
+        <form method="POST" action="{% url 'restablecer' %}">
+            {% csrf_token %}
+            <h1>Restablecer Contraseña</h1>
+            <p>Introduce tu correo electronico registrado y te enviaremos un enlace para restablecer tu contraseña</p>
+            <div class="input-box">
+                <input type="email" placeholder="Correo Electronico" id="email" name="email" required>
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <button class="boton1" type="submit">Enviar Correo</button>
+        </form>
+    </div> 
+    <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+            <img class="logotipo" src="{% static 'img/logotipo.png' %}" alt="Descripción de la imagen">
+            
+        </div>
+    </div> 
+{% endblock %}

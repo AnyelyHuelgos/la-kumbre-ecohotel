@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Reservas{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/reservas.css' %}">
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<div class="container">
+    <div class="form-box login">
+        <form method="POST" id="reservaForm">
+            {% csrf_token %}
+            <h1>Hacer Reservas</h1>
+            
+            {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <div class="input-box">
+                <label for="cabana">Cabaña</label>
+                <input type="text" id="cabana" name="cabana" class="form-control" 
+                       value="{% if cabana %}{{ cabana.nombre }}{% endif %}" readonly>
+                <input type="hidden" id="cabana_id" name="cabana_id" 
+                       value="{% if cabana %}{{ cabana.id }}{% endif %}">
+                <i class='bx bxs-home'></i>
+            </div>
+            <div class="input-box">
+                <label for="fecha">Fecha</label>
+                <input type="text" id="fecha" name="fecha" class="form-control" required> 
+                <i class='bx bxs-calendar'></i> 
+            </div>
+            <div class="input-box">
+                <label for="precio">Precio Por Pareja</label>
+                <input type="text" id="precio" name="precio" class="form-control" readonly> 
+                <small id="precio_info" class="form-text text-muted"></small>
+                <i class='bx bx-money'></i> 
+            </div>
+            
+            <div class="input-box">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono" name="telefono" class="form-control" required> 
+                <i class='bx bxs-phone'></i>
+            </div>
+
+            <!-- Añade esto después del campo de teléfono -->
+            <input type="hidden" id="numero_personas" name="numero_personas" value="2">
+            <!-- Nuevos campos para personas adicionales -->
+            <div class="input-box">
+                <label>¿Desea añadir persona adicional?</label>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="tiene_personas_adicionales" id="personas_adicionales_si" value="si"> Sí
+                    </label>
+                    <label>
+                        <input type="radio" name="tiene_personas_adicionales" id="personas_adicionales_no" value="no" checked> No
+                    </label>
+                </div>
+            </div>
+            
+            <div class="input-box" id="div_personas_adicionales" style="display: none;">
+                <label for="personas_adicionales">Cantidad de personas adicionales</label>
+                <input type="number" id="personas_adicionales" name="personas_adicionales" class="form-control" min="0" value="0"> 
+                <i class='bx bxs-user-plus'></i>
+                <small id="precio_adicional_info" class="form-text text-muted"></small>
+            </div>
+            
+            <!-- Campo para mostrar el desglose de precios -->
+            <!-- Fragmento para añadir al formulario de reservas -->
+            <div class="price-breakdown" id="price-breakdown" style="display: none;">
+                <h3>Desglose de Precios:</h3>
+                <div id="precio_base_info">Precio base: $<span id="precio_base_valor">0</span></div>
+                <div id="precio_adicional_desglose">Personas adicionales: $<span id="precio_adicional_valor">0</span></div>
+                <div id="precio_total_info">Total: $<span id="precio_total_valor">0</span></div>
+                <input type="hidden" id="precio_personas_adicionales" name="precio_personas_adicionales" value="0">
+                <input type="hidden" id="precio_total" name="precio_total" value="0">
+                <input type="hidden" id="numero_personas" name="numero_personas" value="2">
+            </div>
+            
+            <button type="submit" class="boton1">Añadir al carrito</button>
+        </form>
+    </div> 
+    <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+            <img class="logotipo" src="{% static 'img/logotipo.png' %}" alt="Descripción de la imagen">
+        </div>
+    </div>
+</div>
+    
+<!-- Cargar jQuery y jQuery UI -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script>
+   $(document).ready(function(){
+    // Obtener el cabana_id de la URL o del campo oculto
+    const cabanaId = $('#cabana_id').val();
+    
+    // Variables para almacenar información de precios
+    let precioCabana = 0;
+    let precioPersonaAdicionalEntreSemana = 60000;
+    let precioPersonaAdicionalFindeFestivo = 80000;
+    let tipoDiaActual = '';
+    
+    // Mostrar/ocultar campo de personas adicionales según selección
+    $('input[name="tiene_personas_adicionales"]').change(function() {
+        if ($(this).val() === "si") {
+            $('#div_personas_adicionales').show();
+            $('#price-breakdown').show();
+            actualizarPrecioTotal();
+        } else {
+            $('#div_personas_adicionales').hide();
+            $('#price-breakdown').hide();
+            // Resetear valores
+            $('#personas_adicionales').val(0);
+            actualizarPrecioTotal();
+        }
+    });
+    
+    // Actualizar precio cuando cambia el número de personas adicionales
+    $('#personas_adicionales').change(function() {
+        const personasAdicionales = parseInt($(this).val()) || 0;
+        
+        // Validación del lado del cliente
+        if (personasAdicionales < 0) {
+            alert("No se permiten valores negativos");
+            $(this).val(0);
+            return;
+        }
+        
+        actualizarPrecioUI();
+        // Reconsultar el precio al servidor con las personas adicionales actualizadas
+        if (cabanaId && $("#fecha").val()) {
+            actualizarPrecio(cabanaId, $("#fecha").val());
+        }
+    });
+    
+    // Función para actualizar solo la UI con los valores actuales
+    function actualizarPrecioUI() {
+        const personasAdicionales = parseInt($('#personas_adicionales').val()) || 0;
+        let precioAdicional = 0;
+        
+        if (personasAdicionales > 0) {
+            // Determinar precio según tipo de día
+            if (tipoDiaActual === 'entre_semana') {
+                precioAdicional = personasAdicionales * precioPersonaAdicionalEntreSemana;
+            } else {
+                // Para fin de semana o festivo
+                precioAdicional = personasAdicionales * precioPersonaAdicionalFindeFestivo;
+            }
+        }
+        
+        const precioTotal = precioCabana + precioAdicional;
+        
+        // Actualizar campos visuales
+        $('#precio_base_valor').text(precioCabana.toFixed(2));
+        $('#precio_adicional_valor').text(precioAdicional.toFixed(2));
+        $('#precio_total_valor').text(precioTotal.toFixed(2));
+        
+        // Actualizar información sobre precios de personas adicionales
+        if (personasAdicionales > 0) {
+            const precioPorPersona = tipoDiaActual === 'entre_semana' ? 
+                precioPersonaAdicionalEntreSemana : precioPersonaAdicionalFindeFestivo;
+            $('#precio_adicional_info').text(`Precio por persona adicional: $${precioPorPersona.toFixed(2)}`);
+        } else {
+            $('#precio_adicional_info').text('');
+        }
+    }
+    
+    // Función para actualizar precios y UI
+function actualizarPrecioTotal() {
+    const personasAdicionales = parseInt($('#personas_adicionales').val()) || 0;
+    let precioAdicional = 0;
+    
+    if (personasAdicionales > 0) {
+        // Determinar precio según tipo de día
+        if (tipoDiaActual === 'entre_semana') {
+            precioAdicional = personasAdicionales * precioPersonaAdicionalEntreSemana;
+        } else {
+            // Para fin de semana o festivo
+            precioAdicional = personasAdicionales * precioPersonaAdicionalFindeFestivo;
+        }
+    }
+    
+    const precioTotal = precioCabana + precioAdicional;
+    
+    // Actualizar campos visuales
+    $('#precio_base_valor').text(precioCabana.toFixed(2));
+    $('#precio_adicional_valor').text(precioAdicional.toFixed(2));
+    $('#precio_total_valor').text(precioTotal.toFixed(2));
+    
+    // Actualizar campos ocultos para enviar al servidor
+    $('#precio_personas_adicionales').val(precioAdicional.toFixed(2));
+    $('#precio_total').val(precioTotal.toFixed(2));
+    
+    // Actualizar información sobre precios de personas adicionales
+    if (personasAdicionales > 0) {
+        const precioPorPersona = tipoDiaActual === 'entre_semana' ? 
+            precioPersonaAdicionalEntreSemana : precioPersonaAdicionalFindeFestivo;
+        $('#precio_adicional_info').text(`Precio por persona adicional: $${precioPorPersona.toFixed(2)}`);
+    } else {
+        $('#precio_adicional_info').text('');
+    }
+    
+    // Actualizar el número total de personas
+    $('#numero_personas').val(2 + personasAdicionales);
+}
+    
+    // Inicializar el Datepicker con configuración mejorada
+    $("#fecha").datepicker({
+        dateFormat: "yy-mm-dd",
+        minDate: new Date(), // Establece la fecha mínima como hoy
+        beforeShowDay: function(date) {
+            // Formato de fecha para comparación
+            let y = date.getFullYear();
+            let m = ("0" + (date.getMonth() + 1)).slice(-2);
+            let d = ("0" + date.getDate()).slice(-2);
+            let dateString = y + '-' + m + '-' + d;
+            
+            // Si existen fechas ocupadas, deshabilitarlas
+            if(window.fechasOcupadas && window.fechasOcupadas.indexOf(dateString) !== -1){
+                return [false, "ocupado", "Fecha ocupada"];
+            }
+            
+            return [true, "", ""];
+        },
+        // Mejora del diseño del calendario
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        changeMonth: true,
+        changeYear: true,
+        showButtonPanel: true,
+        showOn: "focus", // Cambiado de "both" a "focus" para que solo aparezca al hacer clic
+        buttonText: "",
+        dayNamesMin: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+        monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        // Cuando se selecciona una fecha
+        onSelect: function(dateText) {
+            // Solo consultar precio si hay una cabaña seleccionada
+            if (cabanaId) {
+                actualizarPrecio(cabanaId, dateText);
+            }
+        },
+        // Controlar la posición del datepicker
+        beforeShow: function(input, inst) {
+            // Asegurar que el calendario aparezca en una posición apropiada
+            inst.dpDiv.css({
+                zIndex: 1000, // Valor alto para asegurar que esté sobre otros elementos
+                marginTop: '10px' // Ajustar según sea necesario
+            });
+        }
+    });
+
+    // CORRECCIÓN: Eliminar el manejador de eventos que cierra el calendario al hacer clic fuera
+    // Este era el problema principal que causaba que el calendario desapareciera al hacer clic en "Next"
+    
+    function actualizarPrecio(cabanaId, fecha) {
+        // Resetear precio mientras se consulta
+        $("#precio").val("");
+        $("#precio_info").text("Calculando...");
+        
+        $.ajax({
+            url: '{% url "calcular_precio" %}',
+            method: 'GET',
+            data: {
+                cabana_id: cabanaId,
+                fecha: fecha,
+                personas_adicionales: $('#personas_adicionales').val() || 0
+            },
+            dataType: 'json',
+            success: function(data) {
+                if (data.success) {
+                    // Actualizar variables globales
+                    precioCabana = data.precio_base;
+                    precioPersonaAdicionalEntreSemana = data.precio_persona_adicional_entre_semana;
+                    precioPersonaAdicionalFindeFestivo = data.precio_persona_adicional_finde_festivo;
+                    tipoDiaActual = data.tipo_dia;
+                    
+                    // Actualizar el precio base en el formulario
+                    $("#precio").val(data.precio_base.toFixed(2));
+                    
+                    // Mostrar información sobre el tipo de día
+                    let tipoDia = "";
+                    switch(data.tipo_dia) {
+                        case 'festivo':
+                            tipoDia = "Precio para día festivo";
+                            break;
+                        case 'fin_semana':
+                            tipoDia = "Precio para fin de semana";
+                            break;
+                        case 'entre_semana':
+                            tipoDia = "Precio para día entre semana";
+                            break;
+                    }
+                    $("#precio_info").text(tipoDia);
+                    
+                    // Actualizar UI con precios
+                    actualizarPrecioUI();
+                } else {
+                    $("#precio").val("");
+                    $("#precio_info").text("Error: " + data.error);
+                    alert("Error al calcular el precio: " + data.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error al consultar el precio:", error);
+                $("#precio").val("");
+                $("#precio_info").text("Error en la consulta");
+                alert("Error al consultar el precio. Por favor, intente de nuevo.");
+            }
+        });
+    }
+    
+    // Si hay cabanaId, se hace una petición AJAX para obtener las fechas ocupadas
+    if(cabanaId) {
+        $.ajax({
+            url: '/fechas_ocupadas/' + cabanaId + '/',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data){
+                window.fechasOcupadas = data.fechas_ocupadas;
+                $("#fecha").datepicker("refresh");
+            },
+            error: function(){
+                console.error("Error al obtener las fechas ocupadas.");
+            }
+        });
+    }
+    
+    // Validación del formulario antes de enviar
+    $("#reservaForm").on('submit', function(e) {
+        const fecha = $("#fecha").val();
+        const precio = $("#precio").val();
+        const telefono = $("#telefono").val();
+        
+        if (!cabanaId) {
+            alert("Error: No se ha seleccionado una cabaña.");
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!fecha) {
+            alert("Por favor, seleccione una fecha para la reserva.");
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!precio) {
+            alert("El precio no ha sido calculado. Por favor, seleccione una fecha válida.");
+            e.preventDefault();
+            return false;
+        }
+        
+        if (!telefono || telefono.trim() === '') {
+            alert("Por favor, ingrese un número de teléfono.");
+            e.preventDefault();
+            return false;
+        }
+        
+        // Validar teléfono (solo números)
+        if (!/^\d+$/.test(telefono)) {
+            alert("El teléfono debe contener solo números.");
+            e.preventDefault();
+            return false;
+        }
+        
+        return true;
+    });
+});
+</script>
+{% endblock %}

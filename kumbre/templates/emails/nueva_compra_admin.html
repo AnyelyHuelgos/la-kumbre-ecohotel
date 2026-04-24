@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Compra Recibida</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .category-section {
+            margin-bottom: 20px;
+        }
+        
+        .product-item {
+            border-left: 4px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        
+        .product-item:hover {
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Colores específicos por categoría */
+        .category-section h4[style*="color: #d4691d"] + .product-item {
+            border-left-color: #d4691d; /* Naranja para comidas */
+        }
+        
+        .category-section h4[style*="color: #1e90ff"] + .product-item {
+            border-left-color: #1e90ff; /* Azul para bebidas */
+        }
+        .header {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #4a6741;
+            color: white;
+            border-radius: 5px 5px 0 0;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        .customer-info {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .reservation {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #e8f4ea;
+            border-radius: 5px;
+        }
+        .totals {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        .grand-total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #4a6741;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .payment-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eff5f5;
+            border-radius: 5px;
+        }
+        .admin-actions {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4a6741;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .highlight {
+            background-color: #ffc;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .section-title {
+            color: #4a6741;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            font-size: 20px;
+        }
+        .products-section {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .delivery-time {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        .delivery-time i {
+            margin-right: 10px;
+            color: #856404;
+        }
+        .product-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .product-list li {
+            border-bottom: 1px solid #eee;
+            padding: 8px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .status-paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .order-id {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .comprobante-section {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .comprobante-image {
+            max-width: 100%;
+            max-height: 400px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Nueva Compra Recibida!</h1>
+        </div>
+        
+        <div class="content">
+            
+            <!-- Información del cliente -->
+            <h3 class="section-title">Datos del Cliente</h3>
+            <div class="customer-info">
+                <p><strong>Nombre:</strong> {{ nombre_cliente }}</p>
+                <p><strong>Email:</strong> {{ email_cliente }}</p>
+                <p><strong>Teléfono:</strong> {{ telefono_cliente }}</p>
+            </div>
+            
+            <!-- Productos -->
+            {% if productos %}
+                <h3 class="section-title">Productos Adquiridos</h3>
+                <div class="products-section">
+                    <!-- Separar comidas y bebidas -->
+                    {% regroup productos by tipo_producto as productos_por_tipo %}
+                    
+                    {% for tipo in productos_por_tipo %}
+                        {% if tipo.grouper == 'comida' %}
+                            <div class="category-section">
+                                <h4 style="color: #d4691d; margin-bottom: 10px;">🍽️ COMIDAS</h4>
+                                {% for producto in tipo.list %}
+                                    <div class="product-item" style="margin-bottom: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; border-left: 4px solid #d4691d;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <strong>{{ producto.nombre }}</strong>
+                                                {% if producto.presentacion %}
+                                                    <span style="color: #6c757d; font-size: 14px;">({{ producto.presentacion }})</span>
+                                                {% endif %}
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <div>Cantidad: {{ producto.cantidad }}</div>
+                                                <div>Precio: ${{ producto.precio_unitario|floatformat:0 }}</div>
+                                                <div style="font-weight: bold;">Subtotal: ${{ producto.precio_total|floatformat:0 }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% elif tipo.grouper == 'bebida' %}
+                            <div class="category-section">
+                                <h4 style="color: #1e90ff; margin-bottom: 10px;">🍹 BEBIDAS</h4>
+                                {% for producto in tipo.list %}
+                                    <div class="product-item" style="margin-bottom: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; border-left: 4px solid #1e90ff;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <strong>{{ producto.nombre }}</strong>
+                                                {% if producto.presentacion %}
+                                                    <span style="color: #6c757d; font-size: 14px;">({{ producto.presentacion }})</span>
+                                                {% endif %}
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <div>Cantidad: {{ producto.cantidad }}</div>
+                                                <div>Precio: ${{ producto.precio_unitario|floatformat:0 }}</div>
+                                                <div style="font-weight: bold;">Subtotal: ${{ producto.precio_total|floatformat:0 }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <!-- Para otros tipos de productos -->
+                            <div class="category-section">
+                                <h4 style="color: #6c757d; margin-bottom: 10px;">📦 OTROS PRODUCTOS</h4>
+                                {% for producto in tipo.list %}
+                                    <div class="product-item" style="margin-bottom: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; border-left: 4px solid #6c757d;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <strong>{{ producto.nombre }}</strong>
+                                                {% if producto.presentacion %}
+                                                    <span style="color: #6c757d; font-size: 14px;">({{ producto.presentacion }})</span>
+                                                {% endif %}
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <div>Cantidad: {{ producto.cantidad }}</div>
+                                                <div>Precio: ${{ producto.precio_unitario|floatformat:0 }}</div>
+                                                <div style="font-weight: bold;">Subtotal: ${{ producto.precio_total|floatformat:0 }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if fecha_entrega %}
+                    <div class="delivery-info">
+                        <h3>Fecha de Reserva solicitado por el cliente</h3>
+                        <p><strong>Fecha de Reserva de Restaurante:</strong> {{ fecha_entrega }}</p>
+                    </div>
+                    {% endif %}
+                        
+                    {% if horario_comida %}
+                    <!-- Siempre mostrar el horario cuando hay productos -->
+                    <div class="delivery-info">
+                        <h3>Horario de entrega solicitado por el cliente</h3>
+                        <p><strong>Hora programada:</strong> {{ horario_comida }}</p>
+                    </div>
+                    {% endif %}
+                    
+                </div>
+            {% endif %}
+            
+            <!-- Reservas -->
+            {% if reservas %}
+            <h3 class="section-title">Reservas Realizadas</h3>
+            {% for reserva in reservas %}
+            <div class="reservation">
+                <div><strong>Cabaña: {{ reserva.cabana }}</strong></div>
+                <div>Fecha: {{ reserva.fecha }}</div>
+                <div>Personas: {{ reserva.personas }}</div>
+                {% if reserva.personas_adicionales > 0 %}
+                <div>Personas adicionales: {{ reserva.personas_adicionales }}</div>
+                {% endif %}
+                <div>Precio total: ${{ reserva.precio }}</div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            <!-- Totales -->
+            <h3 class="section-title">Resumen del Pedido</h3>
+            <div class="totals">
+                {% if productos %}
+                <div class="total-line">
+                    <span>Subtotal Productos:</span>
+                    <span>${{ total_productos }}</span>
+                </div>
+                {% endif %}
+                
+                {% if reservas %}
+                <div class="total-line">
+                    <span>Subtotal Reservas:</span>
+                    <span>${{ total_reservas }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="total-line grand-total">
+                    <span>TOTAL:</span>
+                    <span>${{ total_general }}</span>
+                </div>
+            </div>
+            <h3 class="section-title">Información Financiera</h3>
+            <div class="totals">
+                <div class="total-line">
+                    <span>Total de la compra:</span>
+                    <span>${{ total_general }}</span>
+                </div>
+                <div class="total-line" style="color: #28a745; font-weight: bold;">
+                    <span>Anticipo recibido:</span>
+                    <span>${{ total_a_pagar }}</span>
+                </div>
+                <div class="total-line" style="color: #dc3545; font-weight: bold;">
+                    <span>Saldo pendiente:</span>
+                    <span>${{ saldo_pendiente }}</span>
+                </div>
+                <div style="margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; font-size: 14px; color: #6c757d;">
+                    {% if reservas %}
+                        <strong>Nota:</strong> Se recibió el 70% del valor de las reservas como anticipo.
+                    {% else %}
+                        <strong>Nota:</strong> Se recibió el 50% del valor de los productos como anticipo.
+                    {% endif %}
+                    El saldo restante se cobrará al momento de la entrega/servicio.
+                </div>
+            </div>
+            <!-- Información de pago -->
+            <h3 class="section-title">Información de Pago</h3>
+            <div class="payment-info">
+                <p>Método seleccionado: <span class="highlight">{{ metodo_pago|title }}</span></p>
+                <p>Estado: <span class="status-badge status-paid">PAGADO</span></p>
+            </div>
+            
+            <!-- Comprobante de pago -->
+            <h3 class="section-title">Comprobante de Pago</h3>
+            <div class="comprobante-section">
+                {% if comprobante_url %}
+                    {% if comprobante_url|lower|slice:"-4:" == ".pdf" %}
+                    <a href="{{ comprobante_url }}" class="btn btn-primary" target="_blank">
+                        <i class="fas fa-file-pdf"></i> Ver comprobante PDF
+                    </a>
+                    {% else %}
+                        <img src="{{ comprobante_url }}" alt="Comprobante de pago" class="comprobante-image">
+                    {% endif %}
+                {% else %}
+                    <p>No se adjuntó comprobante de pago.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Acciones para el administrador -->
+            
+        </div>
+        
+        <div class="footer">
+            <p>Este correo es generado automáticamente por el sistema de gestión de compras.</p>
+            <p>&copy; 2025 Panel Administrativo de La Kumbre</p>
+        </div>
+    </div>
+</body>
+</html>

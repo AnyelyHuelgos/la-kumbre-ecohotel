@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Historial{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/historial.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Sección de historial de reservas -->
+    <div id="reservas" class="tab-content active">
+        <div class="container reservas-container">
+            <div class="reservas-section">
+                <h1>Historial de Reservas</h1>
+                {% if reservas %}
+                    <div class="reservas-historial">
+                        {% for reserva in reservas %}
+                            <div class="reserva-item">
+                                <div class="reserva-header">
+                                    <span class="reserva-cabana">{{ reserva.cabana }}</span>
+                                    <span class="reserva-estado {% if reserva.confirmada %}confirmada{% else %}pendiente{% endif %}">
+                                        {% if reserva.confirmada %}
+                                            <i class="fas fa-check-circle"></i> Confirmada
+                                        {% else %}
+                                            <i class="fas fa-clock"></i> Pendiente
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div class="reserva-detalles">
+                                    <div class="reserva-dato">
+                                        <i class="fas fa-calendar"></i> Fecha: {{ reserva.fecha }}
+                                    </div>
+                                    <div class="reserva-dato">
+                                        <i class="fas fa-tag"></i> Precio: ${{ reserva.precio }}
+                                    </div>
+                                    <div class="reserva-dato">
+                                        <i class="fas fa-users"></i> Personas: {{ reserva.numero_personas }}
+                                    </div>
+                                    <div class="reserva-dato">
+                                        <i class="fas fa-phone"></i> Teléfono: {{ reserva.telefono }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-reservas">
+                        <p>No tienes reservas actualmente.</p>
+                        <a href="{% url 'cabanas' %}" class="boton1">Hacer una reserva</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <script>
+        function openTab(tabName) {
+            // Ocultar todos los contenidos de pestañas
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            // Desactivar todos los botones de pestañas
+            var tabButtons = document.getElementsByClassName("tab-btn");
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            // Mostrar el contenido de pestaña seleccionado y activar el botón
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
+        }
+    </script>
+{% endblock %}

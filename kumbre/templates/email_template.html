@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Sugerencia - La Kumbre Ecohotel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5e8 0%, #e1f0ff 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #81c784 0%, #64b5f6 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .info-card {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e3f2fd 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #66bb6a;
+        }
+        
+        .info-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #2e7d32;
+            min-width: 100px;
+            font-size: 14px;
+        }
+        
+        .info-value {
+            color: #424242;
+            font-size: 14px;
+            flex: 1;
+        }
+        
+        .categoria-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #66bb6a 0%, #42a5f5 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .mensaje-box {
+            background: white;
+            border: 2px solid #e8f5e8;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .mensaje-title {
+            color: #2e7d32;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .mensaje-content {
+            color: #424242;
+            font-size: 15px;
+            line-height: 1.6;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #81c784;
+        }
+        
+        .footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 8px;
+            display: inline-block;
+        }
+        
+        .timestamp {
+            color: #81c784;
+            font-size: 12px;
+            font-style: italic;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>🌿 Nueva Sugerencia Recibida</h1>
+            <p>La Kumbre Ecohotel - Sistema de Sugerencias</p>
+        </div>
+        
+        <div class="content">
+            <div class="info-card">
+                <div class="info-row">
+                    <span class="info-label">👤 Nombre:</span>
+                    <span class="info-value">{{ sugerencia.username }}</span>
+                </div>
+                
+
+                
+                {% if sugerencia.telefono %}
+                <div class="info-row">
+                    <span class="info-label">📱 Teléfono:</span>
+                    <span class="info-value">{{ sugerencia.telefono }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="info-row">
+                    <span class="info-label">🏷️ Categoría:</span>
+                    <span class="categoria-badge">{{ sugerencia.categoria }}</span>
+                </div>
+                
+            </div>
+            
+            <div class="mensaje-box">
+                <div class="mensaje-title">
+                    💬 Mensaje de la sugerencia:
+                </div>
+                <div class="mensaje-content">
+                    {{ sugerencia.sugerencia|linebreaks }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Este correo fue generado automáticamente por el sistema de sugerencias de La Kumbre Ecohotel</p>
+        </div>
+    </div>
+</body>
+</html>

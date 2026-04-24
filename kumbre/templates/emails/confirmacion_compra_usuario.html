@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Compra</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .header h1 {
+            color: #4a6741;
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        .item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+        }
+        .reservation {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #e8f4ea;
+            border-radius: 5px;
+        }
+        .totals {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .total-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        .grand-total {
+            font-weight: bold;
+            font-size: 18px;
+            color: #4a6741;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .payment-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #eff5f5;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .payment-code {
+            font-weight: bold;
+            font-size: 20px;
+            margin: 10px 0;
+            color: #4a6741;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4a6741;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>¡Gracias por tu compra!</h1>
+        </div>
+        
+        <div class="content">
+            <p>Hola <strong>{{ nombre }}</strong>,</p>
+            
+            <p>Te agradecemos por elegir La Kumbre Ecohotel. Tu pedido ha sido procesado con éxito.Le recordamos que es necesario mostrar el email de confirmación al momento de su llegada para validar su reserva.</p>
+            <p>A continuación, te mostramos los detalles de tu compra:</p>
+            
+            <h2>Detalles del Pedido</h2>
+            <!-- Añadir esta sección si hay productos y horario de comida -->
+
+            <!-- Productos -->
+            {% if productos %}
+            <h3>Productos:</h3>
+            {% for producto in productos %}
+            <div class="item">
+                <div><strong>{{ producto.nombre }}</strong></div>
+                <div>Cantidad: {{ producto.cantidad }}</div>
+                <div>Precio unitario: ${{ producto.precio_unitario }}</div>
+                <div>Subtotal: ${{ producto.precio_total }}</div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% if fecha_entrega %}
+            <div class="delivery-info">
+                <h3>Fecha de Reserva en el restaurante</h3>
+                <p><strong>Fecha de Reserva:</strong> {{ fecha_entrega }}</p>
+            </div>
+            {% endif %}
+            {% if productos and horario_comida %}
+            <div class="delivery-time">
+                <h3>Horario de entrega para tus alimentos</h3>
+                <p><strong>Hora programada:</strong> {{ horario_comida }}</p>
+            </div>
+            {% endif %}
+            <!-- Reservas -->
+            {% if reservas %}
+            <h3>Reservas:</h3>
+            {% for reserva in reservas %}
+            <div class="reservation">
+                <div><strong>Cabaña: {{ reserva.cabana }}</strong></div>
+                <div>Fecha: {{ reserva.fecha }}</div>
+                <div>Personas: {{ reserva.personas }}</div>
+                {% if reserva.personas_adicionales > 0 %}
+                <div>Personas adicionales: {{ reserva.personas_adicionales }}</div>
+                {% endif %}
+                <div>Precio total: ${{ reserva.precio }}</div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            
+            <!-- Totales -->
+            <div class="totals">
+                {% if productos %}
+                <div class="total-line">
+                    <span>Subtotal Productos:</span>
+                    <span>${{ total_productos }}</span>
+                </div>
+                {% endif %}
+                
+                {% if reservas %}
+                <div class="total-line">
+                    <span>Subtotal Reservas:</span>
+                    <span>${{ total_reservas }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="total-line grand-total">
+                    <span>TOTAL:</span>
+                    <span>${{ total_general }}</span>
+                </div>
+            </div>
+            
+            <!-- Información de pago -->
+            <div class="payment-info">
+                <h3>Información de Pago</h3>
+                <p>Método seleccionado: <strong>{{ metodo_pago }}</strong></p>
+            </div>
+            
+            <p>Si tienes alguna pregunta sobre tu pedido, no dudes en contactarnos respondiendo a este correo electrónico o llamando directamente a nuestros numeros.</p>
+            <p>Recuerda que ingresar al a La Kumbre se te solicita este comprobante para hacer valida la Reserva</p>
+            <p>¡Esperamos que disfrutes tu compra!</p>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 La Kumbre. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</body>
+</html>

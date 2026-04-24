@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Galeria{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/galeria.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+
+<h2>Galeria de imagenes</h2>
+
+<!-- Nueva sección con dos imágenes con enlaces -->
+<div class="enlaces-destacados">
+  <a href="/columpio" class="enlace-destacado">
+    <h4>Columpio Extremo</h4>
+    <div class="imagen-destacada">
+      <img src="{% static 'img/columpio.webp' %}" alt="Imagen destacada 1">
+      <div class="overlay-destacado">Ver más</div>
+    </div>
+  </a>
+  
+  <a href="/spots" class="enlace-destacado">
+    <h4>Spots Fotograficos</h4>
+    <div class="imagen-destacada">
+      <img src="{% static 'img/carro3.webp' %}" alt="Imagen destacada 2">
+      <div class="overlay-destacado">Ver más</div>
+    </div>
+  </a>
+</div>
+  
+<div class="galeria">
+  <div class="fila fila-superior">
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/restaurante.webp' %}" data-lightbox="galeria" data-title="Diseño">
+        <img src="{% static 'img/restaurante.webp' %}" alt="Imagen" class="imagen">
+        <div class="overlay">restaurantre</div>
+      </a>
+    </div>                                                                                                                                
+    
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/galeria333.webp' %}" data-lightbox="galeria" data-title="Entrada">
+        <img src="{% static 'img/galeria333.webp' %}" alt="Imagen" class="imagen">
+        <div class="overlay">Entrada</div>
+      </a>
+    </div>
+    
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/galeria666.webp' %}" data-lightbox="galeria" data-title="Cultura">
+        <img src="{% static 'img/galeria666.webp' %}" alt="Imagen" class="imagen">
+        <div class="overlay">Cultura</div>
+      </a>
+    </div>
+  </div>
+  
+  <div class="fila fila-central">
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/cabatabi111.webp' %}" data-lightbox="galeria" data-title="Estilo">
+        <img src="{% static 'img/cabatabi111.webp' %}" alt="Imagen" class="imagen">
+        <div class="overlay">Tabi</div>
+      </a>
+    </div>
+    
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/any5.webp' %}" data-lightbox="galeria" data-title="Naturaleza">
+        <img src="{% static 'img/any5.webp' %}" alt="Imagen" class="imagen">
+        <div class="overlay">Naturaleza</div>
+      </a>
+    </div>
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/cafetalbuena.jpg' %}" data-lightbox="galeria" data-title="Cafeteal">
+        <img src="{% static 'img/cafetalbuena.jpg' %}" alt="Imagen" class="imagen">
+        <div class="overlay">Cafetal</div>
+      </a>
+    </div>
+    
+    <div class="imagen-contenedor central-contenedor">
+      <a href="{% static 'img/geisha9.jpg' %}" data-lightbox="galeria" data-title="Geisha">
+        <img src="{% static 'img/geisha9.jpg' %}" alt="Imagen" class="imagen central">
+        <div class="overlay">Geisha</div>
+      </a>
+    </div>
+    
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/DJI_0123.webp' %}" data-lightbox="galeria" data-title="Bourbon">
+        <img src="{% static 'img/DJI_0123.webp' %}" alt="Imagen" class="imagen">
+        <div class="overlay">Bourbon</div>
+      </a>
+    </div>
+    
+    <div class="imagen-contenedor">
+      <a href="{% static 'img/wushwush.webp' %}" data-lightbox="galeria" data-title="Gastronomía">
+        <img src="{% static 'img/wushwush.webp' %}" alt="Imagen" class="imagen">
+        <div class="overlay">Wush-Wush</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts para Lightbox2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+<script>
+  lightbox.option({
+    'resizeDuration': 200,
+    'wrapAround': true,
+    'albumLabel': "Imagen %1 de %2",
+    'fadeDuration': 300
+  });
+</script>
+{% endblock %}
