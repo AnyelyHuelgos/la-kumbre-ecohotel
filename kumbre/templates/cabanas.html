@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cabañas{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/cabana.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
+
+  
+<h5>Conoce Nuestras Hermosas Cabañas</h5>
+	<div class="contenedor-galeria">
+		<ul> 
+			<li>
+			    <a href="{% url 'cabanatabi'%}">
+				<div class="carousel">
+                    <div class="carousel-images">
+                        <img src="/static/img/cabatabi111.webp" alt="Imagen 1">
+                        <img src="/static/img/salatabi.jpg" alt="Imagen 2">
+                    </div>
+                </div>
+
+                  <button class="btntabi">CABAÑA TABI</button>
+                </a>
+			</li>
+			<li>
+			    <a href="{% url 'cabanageisha'%}">
+				<div class="carousel">
+                    <div class="carousel-images">
+                        <img src="/static/img/geisha9.jpg" alt="Imagen 1">
+                        <img src="/static/img/geisha5.jpg" alt="Imagen 2">
+                    </div>
+                </div>
+                    <button class="btntabi">CABAÑA GEISHA</button>
+                </a>
+			</li>
+			<li>
+			     <a href="{% url 'cabanacafetal'%}">
+				<div class="carousel">
+                    <div class="carousel-images">
+                        <img src="/static/img/cafetalbuena.jpg" alt="Imagen 1">
+                        <img src="/static/img/camacafetal.jpg" alt="Imagen 2">
+                    </div>
+                </div>
+            
+               
+                    <button class="btntabi">CABAÑA CAFETAL</button>
+                </a>
+			</li>
+			<li>
+			    <a href="{% url 'cabanabourbon'%}">
+				<div class="carousel">
+                    <div class="carousel-images">
+                        <img src="/static/img/cabour.jpg" alt="Imagen 1">
+                        <img src="/static/img/bourbon111.jpg" alt="Imagen 2">
+                    </div>
+                </div>
+                
+                
+                    <button class="btntabi">CABAÑA BOURBON</button>
+                </a>
+			</li>
+			<li> 
+		    	<a href="{% url 'cabanawush'%}">    
+				<div class="carousel">
+                    <div class="carousel-images">
+                        <img src="/static/img/wushwush.webp" alt="Imagen 1">
+                        <img src="/static/img/wush4.jpg" alt="Imagen 2">
+                    </div>
+                </div>
+                    <button class="btntabi">CABAÑA WUSH WUSH</button>
+                </a>
+			</li>
+		</ul>
+	</div>
+
+
+<script src="{% static 'js/cabana.js' %}"></script>
+
+
+
+{% endblock %}

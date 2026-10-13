@@ -1,0 +1,63 @@
+    /* Contenedor principal */
+    .container {
+        width: 80%;
+        margin: 0 auto;
+        padding: 20px;
+        height: auto;
+    }
+
+    /* Título */
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Grid de productos: 4 columnas en pantallas grandes */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+        gap: 20px; /* Espacio entre columnas y filas */
+    }
+
+    /* Tarjeta de cada producto */
+    .product-card {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    /* Imagen del producto */
+    .product-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+
+    /* Botón */
+    .btn {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    /* Responsivo: si la pantalla es más pequeña, ajustar columnas */
+    @media (max-width: 992px) {
+        .products-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .products-grid {
+            grid-template-columns: 1fr;
+        }
+    }

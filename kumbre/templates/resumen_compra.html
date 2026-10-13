@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}gastronomia{% endblock %}
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/resumen_compra.css' %}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+
+<div class="container">
+    <div class="cart-container">
+        <div class="cart-header">
+            <h1>
+                <i class="fas fa-shopping-cart me-2"></i>Tu Carrito
+                {% if productos or reservas %}
+                {% endif %}
+            </h1>
+        </div>
+        {% if productos or reservas %}
+        {% if reservas %}
+        <div class="section-header">
+            <i class="fas fa-calendar-check"></i> Tus Reservas
+        </div>
+        <div class="productos-list mb-4">
+            {% for reserva in reservas %}
+                <div id="reserva-{{ reserva.id }}" class="cart-item">
+                    <div class="item-details">
+                        <div class="item-name">{{ reserva.cabana }}</div>
+                        <div class="item-info">
+                            <span><i class="fas fa-calendar-alt me-1"></i> Fecha: {{ reserva.fecha }}</span>
+                            <span><i class="fas fa-users me-1"></i> Personas: {{ reserva.numero_personas }}</span>
+                            {% if reserva.personas_adicionales > 0 %}
+                            <span><i class="fas fa-user-plus me-1"></i> Adicionales: {{ reserva.personas_adicionales }}</span>
+                            <span><i class="fas fa-coins me-1"></i> Extra: ${{ reserva.precio_personas_adicionales|floatformat:2 }}</span>
+                            {% endif %}
+                            <span class="price"><i class="fas fa-tag me-1"></i> Total: ${{ reserva.precio|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                    <form action="{% url 'eliminar_reserva' reserva.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-remove eliminar-reserva" data-reserva-id="{{ reserva.id }}">
+                            <i class="fas fa-trash-alt me-1"></i> Eliminar
+                        </button>
+                    </form>
+                    
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    <!-- Sección de Productos -->
+    {% if productos %}
+    <div class="section-header">
+        <i class="fas fa-box-open"></i> Tus Productos
+    </div>
+    <div class="productos-list mb-4">
+        {% for item in productos %}
+            <div id="producto-{{ item.id }}" class="cart-item">
+                <div class="item-details">
+                    <div class="item-name">{{ item.producto.nombre }}</div>
+                   <div class="item-info">
+                        <span><i class="fas fa-cubes me-1"></i> Cantidad: {{ item.cantidad }}</span>
+                        
+                        <!-- Mostrar presentación si es bebida -->
+                        {% if item.presentacion %}
+                            <span><i class="fas fa-glass-martini me-1"></i> Presentación: {{ item.get_presentacion_display }}</span>
+                        {% endif %}
+                        
+                        <!-- Mostrar precio unitario y subtotal -->
+                        <span class="price"><i class="fas fa-tag me-1"></i> Precio unitario: ${{ item.precio_unitario|floatformat:2 }}</span>
+                        <span class="price-total"><strong><i class="fas fa-calculator me-1"></i> Subtotal: ${{ item.get_total|floatformat:2 }}</strong></span>
+                    </div>
+                </div>
+                <!-- Restaurado el botón original, pero con estilos mejorados -->
+                <button type="button" class="btn btn-remove eliminar-producto" data-producto-id="{{ item.id }}">
+                    <i class="fas fa-trash-alt me-1"></i> Eliminar
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Botones de Acción -->
+    <div class="cart-actions">
+        <a href="{% url 'productos' %}" class="btn btn-cart btn-continue">
+            <i class="fas fa-arrow-left"></i> Seguir Comprando
+        </a>
+        <a href="{% url 'metodos_pago' %}" class="btn btn-cart btn-checkout">
+            Proceder al Pago <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+{% else %} 
+    <div class="empty-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Tu carrito está vacío</p>
+        <a href="{% url 'cabanas' %}" class="btn btn-cart btn-checkout">
+            <i class="fas fa-store me-1"></i> Quiero Reservar
+        </a>
+    </div>
+{% endif %}
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Script existente para productos
+    const eliminarBotones = document.querySelectorAll('.eliminar-producto');
+    
+    eliminarBotones.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const productoId = this.getAttribute('data-producto-id');
+            const productoItem = document.getElementById('producto-' + productoId);
+            
+            fetch(`/eliminar_producto/${productoId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    productoItem.classList.add('item-removed');
+                    setTimeout(() => {
+                        productoItem.remove();
+                    }, 500);
+                    
+                    // AGREGAR ESTA PARTE - Actualizar contador
+                    const cartCounter = document.querySelector('#contador-carrito');
+                    if (cartCounter && data.cart_count !== undefined) {
+                        cartCounter.textContent = data.cart_count;
+                    }
+                    
+                } else {
+                    console.error('Error al eliminar producto:', data.mensaje);
+                    alert('No se pudo eliminar el producto');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al eliminar el producto');
+            });
+        });
+    });
+    
+    // Nuevo script para reservas
+    const eliminarReservas = document.querySelectorAll('.eliminar-reserva');
+    
+    eliminarReservas.forEach(boton => {
+        boton.addEventListener('click', function() {
+            const reservaId = this.getAttribute('data-reserva-id');
+            const reservaItem = document.getElementById('reserva-' + reservaId);
+            
+            // Crear un formulario dinámicamente para enviar el POST
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/eliminar_reserva/${reservaId}/`;
+            
+            // Añadir token CSRF
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = '{{ csrf_token }}';
+            form.appendChild(csrfInput);
+            
+            document.body.appendChild(form);
+            
+            // Aplicar animación antes de enviar
+            reservaItem.classList.add('item-removed');
+            
+            // Enviar el formulario después de la animación
+            setTimeout(() => {
+                form.submit();
+            }, 500);
+        });
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/compra_confirmada.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">¡Compra Confirmada!</h2>
+                </div>
+                <div class="card-body">
+                    
+                    <h3 class="card-title">Gracias por tu compra, {{ compra.nombre }}</h3>
+                    <p class="card-text">Tu pedido ha sido procesado exitosamente.</p>
+                    
+                    
+                    
+                    <div class="mt-4 d-flex justify-content-center">
+                        <a href="?descargar_pdf=true" class="btn btn-primary btn-lg">
+                            <i class="fas fa-file-pdf me-2"></i> Descargar Factura PDF
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="text-center mb-1">
+                            Descarga tu factura para guardarla como comprobante de tu compra, búscala en los archivos de tu celular.
+                        </p>
+                        <p class="text-center">
+                            <a href="{% url 'inicio' %}" class="btn btn-outline-secondary mt-3">Volver al inicio</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/confirmar_compra.js' %}"></script>
+
+{% endblock %}

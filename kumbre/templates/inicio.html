@@ -1,0 +1,365 @@
+<!-- web/templates/base.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Kumbre</title>
+    <link rel="stylesheet" href="{% static 'styles/inicio.css' %}">
+    <link rel="shortcut icon" href="{% static 'img/icino.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+            <div class="arriba">
+                <div class="arriba">
+                    <a href="{% url 'inicio'%}">
+                        <img src="{% static 'img/logotipo.webp' %}" alt="Descripción de la imagen">
+                    </a>
+                </div>
+            </div>
+        <nav>
+            <input type="checkbox" id="menu-toggle" class="menu-checkbox">
+        <label for="menu-toggle" class="menu-icon">&#9776;</label>
+        <ul class="menu">  
+            <li class="links"><a href="{% url 'nosotros' %}"><strong>Nosotros</strong></a></li>
+            <li class="links"><a href="{% url 'cabanas' %}"><strong>Cabañas</strong></a></li>
+            <li class="links"><a href="{% url 'productos' %}"><strong>Gastronomia</strong></a></li>
+            <li class="links"><a href="{% url 'galeria' %}"><strong>Galeria</strong></a></li>
+            <li class="links"><a href="{% url 'spots' %}"><strong>Spots</strong></a></li>
+        </ul>
+        <div class="nav-iconos">
+            {% if user.is_authenticated %}
+            <div class="nav-user-dropdown">
+                <i class="ri-user-line"></i>
+                <div class="dropdown-content">
+                    <a href="{% url 'perfil' %}">
+                        <i class="ri-user-line"></i>
+                        Perfil de usuario
+                    </a>
+                    <a href="{% url 'historial' %}">
+                        <i class="ri-shopping-cart-line"></i> 
+                        Historial de Compras
+                    </a>
+                    <a href="{% url 'logout' %}">
+                        <i class="ri-logout-box-line"></i>
+                        Cerrar sesión
+                    </a>
+                </div>
+            </div>
+            <div class="cart-icon-container">
+                <a href="{% url 'resumen_compra' %}">
+                    <i class="ri-calendar-check-line"></i>
+                    <span id="contador-carrito">{{ cart_count }}</span>
+                </a>
+            </div>
+            {% else %}
+            <a href="{% url 'iniciar_sesion' %}"><i class="ri-user-line"></i></a>
+            {% endif %}
+        </div>
+        </nav>
+        
+    </header>
+ 
+{% block content %}
+
+
+<div class="container">
+    <div class="slide">
+        <div class="item" style="background-image: url('/static/img/fon1.webp');"></div>
+
+        <div class="item" style="background-image: url('/static/img/DJI_0123.webp');"></div>
+
+        <div class="item" style="background-image: url('/static/img/fondopantalla1.webp');"></div>
+ 
+        <div class="item" style="background-image: url('/static/img/fondo4.webp');"></div>
+
+        <div class="item" style="background-image: url('/static/img/dji_fly_20230711_174052_291_1689395541244_photo.webp');"></div>
+
+        <div class="item" style="background-image: url('/static/img/fondoo6.webp');"></div>
+    </div>
+
+    <div class="button">
+        <button class="prev">Volver<i class="fa-solid fa-arrow-left"></i></button>
+        <button class="next">Explorar<i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+</div>
+
+
+<!-- Banner Principal -->
+<div class="banner-aventura">
+    <div class="banner-container">
+        <div class="banner-text animate__animated animate__fadeInLeft">
+            <h1>
+                "Tú proxima aventura te espera en La Kumbre"
+            </h1>
+        </div>
+        <div class="banner-logo animate__animated animate__fadeInRight">
+            <img src="{% static 'img/icino.png' %}" alt="Logo La Kumbre" class="floating-logo">
+        </div>
+    </div>
+</div>
+
+
+<div class="container3">
+    <div class="title-container">
+        <h1 class="main-title">
+            <span class="emoji-decoration">🌿</span>
+            Nuestros Servicios
+            <span class="emoji-decoration">🌿</span>
+        </h1>
+    </div>
+    
+    <div class="services-container">
+        <!-- Cabañas -->
+        <div class="service-card">
+            <div class="service-image-container">
+                <img src="{% static 'img/cabatabi111.webp' %}" alt="Imagen " class="service-image">
+                <div class="image-overlay">
+                    <p class="overlay-text">Pulsa para más información 👆</p>
+                </div>
+            </div>
+            <div class="service-content">
+                <h2 class="service-title">Cabañas <span>🏡</span> <span class="arrow-indicator"><i class="fas fa-chevron-down"></i></span></h2>
+                <div class="service-content-hidden">
+                    <div class="service-description">
+                        <p>Nuestras cabañas ofrecen el refugio perfecto en medio de la naturaleza. Diseñadas para brindar comodidad y tranquilidad en un entorno único.</p>
+                        </div>
+                    <div class="button-container">
+                        <button class="cta-button pulse"><a href="{% url 'cabanas' %}">Reserva ahora <span>✨</span></a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gastronomía -->
+        <div class="service-card">
+            <div class="service-image-container">
+                <img src="{% static 'img/gastronomia.webp' %}" alt="Imagen " class="service-image">
+                <div class="image-overlay">
+                    <p class="overlay-text">Pulsa para más información 👆</p>
+                </div>
+            </div>
+            <div class="service-content">
+                <h2 class="service-title">Gastronomía <span>🍽️</span> <span class="arrow-indicator"><i class="fas fa-chevron-down"></i></span></h2>
+                <div class="service-content-hidden">
+                    <div class="service-description">
+                        <p>Cada plato es una experiencia única que complementa perfectamente tu estadía en nuestras cabañas, creando recuerdos inolvidables para todos los sentidos.</p>
+                    </div>
+                    <div class="button-container">
+                        <button class="cta-button pulse"><a href="{% url 'productos' %}">Ver Menú <span>✨</span></a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="service-card">
+            <div class="service-image-container">
+                <img src="{% static 'img/columpio.webp' %}" alt="Imagen " class="service-image">
+                <div class="image-overlay">
+                    <p class="overlay-text">Pulsa para más información 👆</p>
+                </div>
+            </div>
+            <div class="service-content">
+                <h2 class="service-title">Columpio <span>🌳</span> <span class="arrow-indicator"><i class="fas fa-chevron-down"></i></span></h2>
+                <div class="service-content-hidden">
+                    <div class="service-description">
+                        <p>Disfruta de la sensación de libertad en nuestros columpios panorámicos y contempla el paisaje desde nuestros miradores con vistas espectaculares al valle.</p>
+                    </div>
+                    <div class="button-container">
+                        <button class="cta-button pulse"><a href="{% url 'columpio' %}">Ver Columpio <span>✨</span></a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <div class="service-card">
+            <div class="service-image-container">
+                <img src="{% static 'img/carro3.webp' %}" alt="Imagen " class="service-image">
+                <div class="image-overlay">
+                    <p class="overlay-text">Pulsa para más información 👆</p>
+                </div>
+            </div>
+            <div class="service-content">
+                <h2 class="service-title">Spots Fotograficos <span>🌄️</span> <span class="arrow-indicator"><i class="fas fa-chevron-down"></i></span></h2>
+                <div class="service-content-hidden">
+                    <div class="service-description">
+                        <p>Descubre nuestros spots fotográficos estratégicamente ubicados para capturar los mejores momentos de tu visita con vistas panorámicas incomparables.</p>
+                    </div>
+                    <div class="button-container">
+                        <button class="cta-button pulse"><a href="{% url 'spots' %}">Explorar spots<span>✨</span></a></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <div class="footer-container">
+        <!-- Apartado 1: Contactenos -->
+        <div class="footer-item contactenos">
+            <h3>Contactenos</h3>
+            <p><strong>Teléfono:</strong></p>
+            <p><a href="tel:+573108831683">3108831683</a></p>
+            <p><strong>Correo:</strong></p>
+            <p><a href="mailto:lakumbredelhuila01@gmail.com">lakumbredelhuila01@gmail.com</a></p>
+        </div>
+        
+        <!-- Apartado 2: Redes sociales -->
+        <div class="footer-item redes-sociales">
+            <h3>Síguenos</h3>
+            <div class="social-icons">
+                <a href="https://wa.link/i27wt5" target="_blank">
+                    <img src="{% static 'img/whatsapp.webp' %}" alt="WhatsApp" width="40">
+                </a>
+                <a href="https://www.facebook.com/lakumbredelhuila/?_rdc=2&_rdr#" target="_blank">
+                    <img src="{% static 'img/facebook.webp' %}" alt="Facebook" width="40">
+                </a>
+                <a href="https://www.instagram.com/lakumbredelhuila?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank">
+                    <img src="{% static 'img/instagram.webp' %}" alt="Instagram" width="40">
+                </a>
+            </div>
+        </div>
+        
+        <!-- Apartado 3: Ubicación -->
+        <div class="footer-item ubicacion">
+            <h3>Estamos Ubicados En:</h3>
+            <p>Vereda Alto San Isidro</p>
+        </div>
+        
+        <!-- Apartado 4: Acerca de la Kumbre -->
+        <div class="footer-item acerca-de">
+            <h3>Acerca de la Kumbre</h3>
+            <ul>
+                <li><a href="{% url 'nosotros' %}">Nosotros</a></li>
+                <li><a href="{% url 'sugerencias' %}">Sugerencias</a></li>
+                <li><a href="{% url 'cabanas' %}">Cabañas</a></li>
+                <li><a href="{% url 'restricciones' %}">Restricciones</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+   <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener todas las tarjetas de servicio
+            const serviceCards = document.querySelectorAll('.service-card');
+            
+            // Configurar la interacción para cada tarjeta
+            serviceCards.forEach(card => {
+                // Animar tarjetas al cargar la página
+                card.style.opacity = '0';
+                
+                // Configurar evento de clic para cada tarjeta
+                card.addEventListener('click', function() {
+                    // Alternar la clase activa
+                    this.classList.toggle('active');
+                    
+                    // Encontrar el contenido oculto
+                    const hiddenContent = this.querySelector('.service-content-hidden');
+                    
+                    // Alternar visibilidad del contenido
+                    hiddenContent.classList.toggle('active');
+                });
+            });
+            
+            // Función para animar la entrada de las tarjetas
+            function animateCards() {
+                serviceCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(20px)';
+                        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 100);
+                    }, index * 300);
+                });
+            }
+            
+            // Iniciar animación
+            setTimeout(animateCards, 300);
+        });
+        
+        
+        const button = document.querySelector('.cta-button');
+        
+        // Crear efecto de partículas
+        button.addEventListener('mousemove', function(e) {
+            const x = e.pageX - button.offsetLeft;
+            const y = e.pageY - button.offsetTop;
+            
+            const particle = document.createElement('span');
+            particle.className = 'particles';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            
+            button.appendChild(particle);
+            
+            const size = Math.random() * 8 + 4;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            // Colores pasteles para las partículas
+            const colors = ['rgba(168, 230, 207, 0.8)', 'rgba(184, 227, 245, 0.8)'];
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            const destinationX = x + (Math.random() - 0.5) * 100;
+            const destinationY = y + (Math.random() - 0.5) * 100;
+            
+            const animation = particle.animate([
+                {
+                    transform: 'translate(0, 0)',
+                    opacity: 1
+                },
+                {
+                    transform: `translate(${destinationX - x}px, ${destinationY - y}px)`,
+                    opacity: 0
+                }
+            ], {
+                duration: 1000,
+                easing: 'cubic-bezier(0,0,0.2,1)'
+            });
+            
+            animation.onfinish = () => {
+                particle.remove();
+            };
+        });
+    </script>
+</body>
+
+{% endblock %}
+<script src="{% static 'js/script.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'js/protection.js' %}"></script>
+<!-- En tu base.html, antes del </body> -->
+<script>
+// Recargar páginas que vienen del caché para actualizar tokens CSRF
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+</script>
+{% if messages %}
+{% for m in messages %}
+    <script>
+        Swal.fire({
+  "text": "{{ m }}",
+  width: 600,
+  padding: "3em",
+  color: "#716add",
+});
+    </script>
+{% endfor %}
+{% endif %}

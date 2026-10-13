@@ -1,0 +1,92 @@
+<!-- {% extends 'base.html' %} -->
+{% load static %}
+{% block title %}gastronomia{% endblock %}
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'styles/iniciar_sesion.css' %}">
+<body data-register-mode="{% if register_mode %}true{% else %}false{% endif %}">
+
+
+
+<div class="container">
+    <div class="form-box login">
+        <form method="POST" action="{% url 'iniciar_sesion' %}">
+            {% csrf_token %}
+            <h1>Iniciar Sesión</h1>
+            <div class="input-box">
+                <input type="text" placeholder="Usuario" id="nombre" name="username" required>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Contraseña" id="contraseña" name="password" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+            <button type="submit" class="btn">Iniciar sesión</button>
+            <a href="{% url 'restablecer' %}" class="forgot-password"><i class='bx bx-key'></i> ¿Olvidó su contraseña?</a>
+        </form>
+    </div>
+
+   <div class="form-box register">
+        <form action="{% url 'registro' %}" method="POST">
+            {% csrf_token %}
+            <h1>Registro</h1>
+            <div class="input-box">
+                <input type="text" placeholder="Usuario" id="nombre" name="username" required value="{{ datos_previos.username|default:'' }}">
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input type="number" placeholder="Telefono" id="telefono" name="telefono" required value="{{ datos_previos.telefono|default:'' }}">
+                <i class='bx bxs-phone'></i>
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Contraseña" id="password" name="password" required>
+                <i class='bx bxs-lock-alt' ></i>
+                <p class="con">La contraseña debe tener minimo 6 caracteres</p>
+            </div>
+            <div class="input-box">
+                <input type="password" placeholder="Confirmar Contaseña" id="confirm_password" name="confirm_password" required>
+                <i class='bx bxs-lock-alt' ></i>
+            </div>
+            
+            <button type="submit" class="btn">Registrarse</button>
+        </form>
+    </div>
+    <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+            <h2>Bienvenido a</h2> <br>
+            <h2>La Kumbre</h2> <br>
+            <p>¿Aun no tienes cuenta?</p>
+            <button class="btn register-btn">Registrate</button>
+        </div>
+
+        <div class="toggle-panel toggle-right">
+            <h2>Bienvenido a</h2> <br>
+            <h2>La Kumbre</h2> <br>
+            <button class="btn login-btn">Iniciar Sesión</button>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/iniciar_sesio.js' %}"></script>
+
+{% endblock %}
+<!-- 
+<div class="todo123">
+    <h2>Iniciar Sesión</h2>
+    <div class="container">
+    
+        <form method="POST" action="{% url 'iniciar_sesion' %}">
+            {% csrf_token %}
+            <label for="correo">Nombre de usuario:</label>
+            <input type="text" id="correo" name="username" required>
+    
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" id="contraseña" name="password" required>
+    
+            <button class="boton12" type="submit">Iniciar Sesión</button>
+        </form>
+    
+        <p class="register-link">¿Aún no tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></p>
+    </div>
+</div> -->

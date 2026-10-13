@@ -1,0 +1,1225 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cabañas{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/metodos_pago.css' %}">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">      -->
+
+<div class="container">
+    <div class="toggle-box3">
+        <div class="toggle-panel toggle-left">
+            <h3>Resumen del Carrito</h3>
+            <form method="POST" class="cart-form">
+                {% if productos or reservas %}
+                    <ul class="list-group">
+                        {% if productos %}
+                            {% for item in productos %}
+                            <li class="list-group-item" tabindex="0">
+                                <div>
+                                    <strong>Producto:</strong> 
+                                    {{ item.producto.nombre }}
+                                    {% if item.presentacion %}
+                                        ({{ item.get_presentacion_display }})
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <strong>Cantidad:</strong> 
+                                    {{ item.cantidad }}
+                                </div>
+                               <div>
+                                    <strong>Precio unitario:</strong> 
+                                    ${{ item.precio_unitario }}
+                                </div>
+                                <div>
+                                    <strong>Precio total:</strong> 
+                                    ${% widthratio item.precio_unitario 1 item.cantidad %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                        {% endif %}
+                        
+                        {% if reservas %}
+                            {% for reserva in reservas %}
+                                <li class="list-group-item" tabindex="0">
+                                    <div>
+                                        <strong>Reserva:</strong> 
+                                        {{ reserva.cabana }}
+                                    </div>
+                                    <div>
+                                        <strong>Fecha:</strong> 
+                                        {{ reserva.fecha }}
+                                    </div>
+                                    <div>
+                                        <strong>Precio:</strong> 
+                                        ${{ reserva.precio }}
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                {% else %}
+                    <p>No hay artículos en el carrito.</p>
+                {% endif %}
+            </form>
+           <div class="cart-totals">
+             {% if productos %}
+                 <div class="subtotal">
+                     <strong>Subtotal Productos:</strong> ${{ total_productos }}
+                 </div>
+            {% endif %}
+            
+            {% if reservas %}
+                <div class="subtotal">
+                    <strong>Subtotal Reservas:</strong> ${{ total_reservas }}
+                </div>
+            {% endif %}
+            
+            <div class="total">
+                <p class="para"><strong>Total:</strong> ${{ total_carrito }}</p>
+            </div>
+        
+           
+            <div class="reservation-note">
+                {% if reservas %}
+                    <p>Para hacer válida su reserva debe cancelar el 70% del precio total de la cabaña.</p>
+                    <!-- Calculamos el valor a cancelar desde el servidor (70% de reservas + 100% de productos) -->
+                    <p class="advance-payment"><strong>Valor a cancelar:</strong> $<span id="advance-payment-amount">{{ total_a_pagar }}</span></p>
+                {% else %}
+                    <p>Para confirmar su pedido debe cancelar el 50% del precio total de los productos.</p>
+                    <!-- Calculamos el valor a cancelar desde el servidor (50% del total) -->
+                    <p class="advance-payment"><strong>Valor a cancelar:</strong> $<span id="advance-payment-amount">{{ total_a_pagar }}</span></p>
+                {% endif %}
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="form-box login">
+        <form method="post" action="{% url 'confirmar_compra' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h2>Confirmar Pedido y Seleccionar Método de Pago</h2>
+                
+            <div class="input-box">
+                <input type="email" name="email" class="form-control" placeholder="correo" id="id_email" value="{{ user.email }}" {% if user.is_authenticated %}readonly{% endif %} required><br>
+                <i class='bx bxs-envelope' ></i>
+            </div>    
+            <div class="input-box">
+                <input type="text" name="nombre" class="form-control" placeholder="Nombre" id="id_nombre" required><br>
+                <i class='bx bxs-user'></i>
+            </div>
+            <div class="input-box">
+                <input type="text" name="telefono" class="form-control"  placeholder="Telefono" id="id_telefono" required><br>
+                <i class='bx bxs-phone' ></i>
+            </div>
+            
+            <!-- Calendario para fecha de entrega (solo cuando no hay reservas) -->
+            <!-- Calendario para fecha de entrega (solo cuando no hay reservas) -->
+                {% if productos and not reservas %}
+                <div class="input-box2">
+                    <label for="id_fecha_entrega">Fecha de Reserva del Restaurante:</label>
+                    <input type="date" name="fecha_entrega" class="form-control" id="id_fecha_entrega" required 
+                           onkeydown="return false" onpaste="return false">
+                    <small class="form-text text-muted">Seleccione el dia para la reserva del restaurante</small>
+                </div>
+                
+                <!-- Estilos específicos para el calendario -->
+                <style>
+                    /* Estilos para fechas pasadas en el calendario nativo */
+                    input[type="date"]::-webkit-calendar-picker-indicator {
+                        background-color: #f8f9fa;
+                        border-radius: 4px;
+                        cursor: pointer;
+                    }
+                    
+                    /* Añadir un poco de espacio al campo de fecha para mejor apariencia */
+                    #id_fecha_entrega {
+                        padding: 8px;
+                        border-radius: 4px;
+                        border: 1px solid #ced4da;
+                    }
+                    
+                    /* Estilo personalizado para cuando el campo no es válido */
+                    #id_fecha_entrega:invalid {
+                        border-color: #dc3545;
+                    }
+                    
+                    /* Estilo para cuando el campo tiene foco */
+                    #id_fecha_entrega:focus {
+                        border-color: #80bdff;
+                        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+                        outline: 0;
+                    }
+                    
+                    /* Deshabilitar entrada directa de texto */
+                    #id_fecha_entrega:read-write {
+                        pointer-events: auto;
+                    }
+                </style>
+                {% endif %}
+
+            {% if productos %}
+            <div class="input-box2">
+                <label for="id_horario_comida">Horario de entrega de comida</label>
+                <input type="time" name="horario_comida" class="form-control" id="id_horario_comida" required>
+            </div>
+            {% endif %}
+
+            <!-- Selección de método de pago -->
+            <div class="form-group">
+                <input type="hidden" name="metodo_pago" id="id_metodo_pago" value="{{ metodo }}">
+                
+                <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#paymentModal">
+                    Seleccionar Método de Pago
+                </button>
+                
+                <div id="selected-method-display">
+                    {% if metodo %}
+                        {% if metodo == "nequi" %}
+                            <img src="{% static 'img/codigonequi123.jpg' %}" alt="Nequi" class="payment-method-img">
+                        {% elif metodo == "bancolombia" %}
+                            <img src="{% static 'img/codigonequi.jpg' %}" alt="Bancolombia" class="payment-method-img">
+                        {% endif %}
+                    {% else %}
+                        <p><em>Ningún método seleccionado</em></p>
+                    {% endif %}
+                </div>
+            </div>
+
+            
+
+            <p>Suba el comprobante real de su pago para asegurar la confirmación oficial de su reserva.</p>
+            <div class="form-group">
+                <label for="id_comprobante_pago" class="form-label">Comprobante de pago <span class="text-danger">*</span></label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input form-control" id="id_comprobante_pago" name="comprobante_pago" accept="image/jpeg,image/png,application/pdf" required>
+                    <small class="form-text text-muted">Sube una imagen del comprobante de pago (máximo 5MB)</small>
+                </div>
+            </div>
+            
+            <button type="submit" class="boton1">Confirmar Compra</button>
+        </form>
+    </div> 
+</div>
+
+<!-- Modal de selección de método de pago -->
+<link rel="stylesheet" href="payment-methods.css">
+<!-- Modal de selección de método de pago -->
+<div id="paymentModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="paymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="paymentModalLabel">Seleccione su Método de Pago</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-methods-container">
+                    <!-- Opciones de pago -->
+                    <div class="payment-tabs">
+                        <button class="payment-tab active" data-method="nequi">Nequi</button>
+                        <button class="payment-tab" data-method="bancolombia">Bancolombia</button>
+                    </div>
+                    
+                    <!-- Contenido para cada método de pago -->
+                    <div class="payment-content-wrapper">
+                        <!-- Nequi -->
+                        <div class="payment-content active" id="nequi-content">
+                            <div class="qr-code-container">
+                                <img src="{% static 'img/codigonequi123.jpg' %}" alt="Código QR Nequi" class="qr-code" id="nequi-qr">
+                                <p>Escanea este código para pagar con Nequi</p>
+                            </div>
+                            <div class="payment-details">
+                                <div class="payment-detail-row">
+                                    <span>Cuenta:</span>
+                                    <strong id="nequi-account">3124458705</strong>
+                                </div>
+                                <div class="payment-detail-row">
+                                    <span>Valor:</span>
+                                    <strong id="nequi-amount">$<span class="payment-amount"></span></strong>
+                                </div>
+                            </div>
+                            <button class="app-link-btn" onclick="abrirApp('nequi')">
+                                Abrir app Nequi <i class='bx bx-right-arrow-alt'></i>
+                            </button>
+                        </div>
+    
+                        <!-- Bancolombia -->
+                        <div class="payment-content" id="bancolombia-content">
+                            <div class="qr-code-container">
+                                <img src="{% static 'img/codigobancolombia.png' %}" alt="Código QR Bancolombia" class="qr-code" id="bancolombia-qr">
+                                <p>Escanea este código para pagar con Bancolombia</p>
+                            </div>
+                            <div class="payment-details">
+                                <div class="payment-detail-row">
+                                    <span>Cuenta:</span>
+                                    <strong id="bancolombia-account">28563959659</strong>
+                                </div>
+                                <div class="payment-detail-row">
+                                    <span>Cedula:</span>
+                                    <strong id="bancolombia-account">1077855588</strong>
+                                </div>
+                                <div class="payment-detail-row">
+                                    <span>Valor:</span>
+                                    <strong id="bancolombia-amount">$<span class="payment-amount"></span></strong>
+                                </div>
+                            </div>
+                            <button class="app-link-btn" onclick="abrirApp('bancolombia')">
+                                Abrir app Bancolombia <i class='bx bx-right-arrow-alt'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="payment-confirmation">
+                    <button type="button" class="btn btn-primary confirm-payment-btn" onclick="confirmarMetodoPago()">
+                        Confirmar método de pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos CSS corregidos para el sistema de pago -->
+<style>
+    /* Estilos para el modal de pago */
+.payment-methods-container {
+    margin-bottom: 15px;
+    min-height: auto;
+}
+
+.payment-tabs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.payment-tab {
+    flex: 1;
+    padding: 8px;
+    background: none;
+    border: none;
+    text-align: center;
+    font-weight: 600;
+    color: #495057;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    outline: none; /* Evita el borde de foco */
+}
+
+.payment-tab:hover {
+    color: #007bff;
+}
+
+.payment-tab.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+}
+
+.payment-content-wrapper {
+    position: relative;
+    min-height: 250px; /* Reducido de 300px */
+}
+
+.payment-content {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 15px; /* Reducido de 20px */
+}
+
+.payment-content.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.qr-code-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px; /* Reducido de 20px */
+}
+
+.qr-code {
+    width: 150px; /* Reducido de 180px */
+    height: 150px; /* Reducido de 180px */
+    margin-bottom: 8px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.qr-loading {
+    width: 150px; /* Reducido de 180px */
+    height: 150px; /* Reducido de 180px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+.payment-details {
+    width: 100%;
+    margin-bottom: 15px; /* Reducido de 20px */
+    padding: 12px; /* Reducido de 15px */
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #e9ecef;
+}
+
+.payment-detail-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px; /* Reducido de 8px */
+    justify-content: center;
+}
+
+.payment-detail-row span {
+    color: #6c757d;
+    margin-right: 10px;
+}
+
+.payment-detail-row strong {
+    font-weight: 600;
+    color: #212529;
+}
+
+.copy-btn {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    padding: 0 5px;
+    margin-left: 5px;
+    transition: transform 0.2s;
+}
+
+.copy-btn:hover {
+    color: #0056b3;
+    transform: scale(1.1);
+}
+
+.app-link-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px; /* Reducido de 10px 20px */
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.app-link-btn:hover {
+    background-color: #218838;
+}
+
+.app-link-btn i {
+    margin-left: 5px;
+}
+
+.payment-confirmation {
+    margin-top: 12px; /* Reducido de 15px */
+    text-align: center;
+}
+
+.confirm-payment-btn {
+    width: 100%;
+    padding: 10px; /* Reducido de 12px */
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.confirm-payment-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Notificación de copiado */
+.copy-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 16px; /* Reducido de 10px 20px */
+    border-radius: 20px;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 9999;
+}           
+
+.copy-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Estilos para el método seleccionado */
+.selected-payment-method {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 8px; /* Reducido de 10px */
+    border: 1px solid #dee2e6;
+}
+
+.payment-method-img {
+    height: 30px; /* Reducido de 35px */
+    margin-bottom: 6px; /* Reducido de 8px */
+    object-fit: contain;
+}
+</style>
+
+
+
+<!-- Incluir jQuery y Bootstrap JS (necesario para el modal) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% if not productos and not reservas %}
+    <div class="alert alert-warning">
+        No hay productos ni reservas en el carrito.
+        <script>
+            console.error('Carrito vacío');
+        </script>
+    </div>
+{% endif %}
+
+{% if productos or reservas %}
+    <div id="debug-info" style="display:none;">
+        Productos: {{ productos|length }}
+        Reservas: {{ reservas|length }}
+    </div>
+{% endif %}
+<script src="{% static 'js/metodos_pago.js.js' %}"></script>
+<script>
+    /* 
+ * SOLUCIONADOR DE PESTAÑAS DE PAGO
+ * Este script corrige los problemas de navegación entre pestañas
+ * en el modal de métodos de pago.
+ */
+
+
+// Script para controlar el horario de entrega de comida
+document.addEventListener('DOMContentLoaded', function() {
+    const horarioInput = document.getElementById('id_horario_comida');
+    if (!horarioInput) return;
+    
+    // Función para determinar si un día es festivo en Colombia (simplificado)
+    // Esta es una implementación básica que deberías adaptar con los festivos reales de Colombia
+    function esFestivo(fecha) {
+        // Lista básica de festivos en Colombia para 2025
+        // Reemplazar con una lista completa según el calendario oficial
+        const festivos = [
+            '2025-01-01', // Año Nuevo
+            '2025-01-06', // Día de Reyes
+            '2025-03-24', // San José
+            '2025-04-17', // Jueves Santo
+            '2025-04-18', // Viernes Santo
+            '2025-05-01', // Día del Trabajo
+            '2025-05-12', // Día de la Ascensión
+            '2025-06-02', // Corpus Christi
+            '2025-06-09', // Sagrado Corazón
+            '2025-06-30', // San Pedro y San Pablo
+            '2025-07-20', // Día de la Independencia
+            '2025-08-07', // Batalla de Boyacá
+            '2025-08-18', // Asunción de la Virgen
+            '2025-10-13', // Día de la Raza
+            '2025-11-03', // Todos los Santos
+            '2025-11-17', // Independencia de Cartagena
+            '2025-12-08', // Inmaculada Concepción
+            '2025-12-25'  // Navidad
+        ];
+        
+        // Formatear la fecha en formato YYYY-MM-DD
+        const fechaStr = fecha.toISOString().split('T')[0];
+        return festivos.includes(fechaStr);
+    }
+    
+    // Función para configurar los límites de horario según el día
+    function configurarHorarioSegunDia() {
+        // Obtener la fecha actual o la fecha seleccionada en el selector de fecha
+        let fechaSeleccionada;
+        const fechaEntregaInput = document.getElementById('id_fecha_entrega');
+        
+        if (fechaEntregaInput && fechaEntregaInput.value) {
+            fechaSeleccionada = new Date(fechaEntregaInput.value);
+        } else {
+            fechaSeleccionada = new Date();
+        }
+        
+        const diaSemana = fechaSeleccionada.getDay(); // 0 es domingo, 1 lunes, etc.
+        const esDiaFestivo = esFestivo(fechaSeleccionada);
+        
+        // Determinar horarios: lun-jue: 8:30-18:30, vie-dom y festivos: 8:30-19:30
+        let horaInicio = '08:30';
+        let horaFin;
+        
+        // Días especiales: viernes, sábado, domingo o festivo
+        if (diaSemana === 5 || diaSemana === 6 || diaSemana === 4 || esDiaFestivo) {
+            horaFin = '19:30';
+        } else {
+            // Días normales (lunes a jueves no festivos)
+            horaFin = '18:30';
+        }
+        
+        // Configurar los atributos min y max del campo de hora
+        horarioInput.setAttribute('min', horaInicio);
+        horarioInput.setAttribute('max', horaFin);
+        
+        // Añadir mensaje informativo sobre el horario permitido
+        const horarioInfo = document.getElementById('horario-info');
+        if (!horarioInfo) {
+            const infoElement = document.createElement('small');
+            infoElement.id = 'horario-info';
+            infoElement.className = 'form-text text-muted';
+            infoElement.innerHTML = `Horario de entrega permitido: ${horaInicio} - ${horaFin}<br><span class="text-info">Recuerda: ¡La hora seleccionada es la hora de entrega de la comida!</span>`;
+            horarioInput.parentNode.appendChild(infoElement);
+        } else {
+            horarioInfo.innerHTML = `Horario de entrega permitido: ${horaInicio} - ${horaFin}<br><span class="text-info">Recuerda: ¡La hora seleccionada es la hora de entrega de la comida!</span>`;
+        }
+        
+        // Verificar si el valor actual está dentro de los límites
+        validarHorarioSeleccionado();
+        
+        return { inicio: horaInicio, fin: horaFin };
+    }
+    
+    // Función para validar que el horario seleccionado esté dentro de los límites
+    function validarHorarioSeleccionado() {
+        if (!horarioInput.value) return true;
+        
+        const valorHora = horarioInput.value;
+        const minHora = horarioInput.getAttribute('min');
+        const maxHora = horarioInput.getAttribute('max');
+        
+        if (valorHora < minHora || valorHora > maxHora) {
+            // Si está fuera de rango, mostrar error y resetear
+            const mensajeError = document.getElementById('horario-error');
+            
+            if (!mensajeError) {
+                const errorElement = document.createElement('div');
+                errorElement.id = 'horario-error';
+                errorElement.className = 'text-danger mt-1';
+                errorElement.textContent = `El horario debe estar entre ${minHora} y ${maxHora}`;
+                horarioInput.parentNode.appendChild(errorElement);
+            }
+            
+            // Resetear a un valor dentro del rango
+            horarioInput.value = (new Date().getHours() >= 18) ? minHora : minHora;
+            return false;
+        } else {
+            // Si está dentro del rango, eliminar cualquier mensaje de error
+            const mensajeError = document.getElementById('horario-error');
+            if (mensajeError) {
+                mensajeError.remove();
+            }
+            return true;
+        }
+    }
+    
+    // Inicializar horarios al cargar la página
+    const limites = configurarHorarioSegunDia();
+    
+    // Si el campo está vacío, establecer un valor predeterminado dentro del horario permitido
+    if (!horarioInput.value) {
+        const ahora = new Date();
+        const horaActual = ahora.getHours();
+        const minutosActuales = ahora.getMinutes();
+        
+        // Formatear la hora actual en formato HH:MM
+        let horaFormateada = `${horaActual.toString().padStart(2, '0')}:${minutosActuales.toString().padStart(2, '0')}`;
+        
+        // Si la hora actual está fuera del rango, usar la hora mínima
+        if (horaFormateada < limites.inicio || horaFormateada > limites.fin) {
+            horaFormateada = limites.inicio;
+        }
+        
+        horarioInput.value = horaFormateada;
+    }
+    
+    // Escuchar cambios en el campo de fecha para actualizar los límites de horario
+    const fechaEntregaInput = document.getElementById('id_fecha_entrega');
+    if (fechaEntregaInput) {
+        fechaEntregaInput.addEventListener('change', function() {
+            configurarHorarioSegunDia();
+        });
+    }
+    
+    // Validar cuando cambia el horario
+    horarioInput.addEventListener('change', function() {
+        validarHorarioSeleccionado();
+    });
+    
+    // Validar en el envío del formulario
+    const formulario = horarioInput.closest('form');
+    if (formulario) {
+        formulario.addEventListener('submit', function(e) {
+            if (!validarHorarioSeleccionado()) {
+                e.preventDefault();
+                alert('Por favor seleccione un horario válido para la reserva del restaurante');
+            }
+        });
+    }
+    
+    // Añadir estilos personalizados para los mensajes
+    const estilos = document.createElement('style');
+    estilos.textContent = `
+        #horario-error {
+            color: #dc3545;
+            font-size: 80%;
+            margin-top: 4px;
+        }
+        
+        #horario-info {
+            font-style: italic;
+            display: block;
+            margin-top: 4px;
+        }
+        
+        input[type="time"]:invalid {
+            border-color: #dc3545;
+        }
+    `;
+    document.head.appendChild(estilos);
+});
+// Añadir esta función al script existente para actualizar los montos en el modal
+function actualizarMontosPago() {
+    // Obtener el valor a pagar desde el elemento en la página
+    const valorAPagar = document.getElementById('advance-payment-amount');
+    
+    if (valorAPagar) {
+        // Obtener el valor como texto
+        const monto = valorAPagar.textContent;
+        
+        // Actualizar todos los elementos con la clase payment-amount en el modal
+        const elementosMontos = document.querySelectorAll('.payment-amount');
+        elementosMontos.forEach(elemento => {
+            elemento.textContent = monto;
+        });
+        
+        console.log('Montos de pago actualizados:', monto);
+    } else {
+        console.error('No se encontró el elemento con el valor a pagar');
+    }
+}
+
+// Ejecutar la función cuando se abra el modal
+document.querySelector('button[data-toggle="modal"][data-target="#paymentModal"]').addEventListener('click', function() {
+    // Pequeño retraso para asegurar que el modal esté visible
+    setTimeout(actualizarMontosPago, 200);
+});
+
+// También actualizar cuando el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function() {
+    // Pequeño retraso para asegurar que todos los elementos estén cargados
+    setTimeout(actualizarMontosPago, 300);
+});
+
+// ========== FUNCIONES PARA FECHA DE ENTREGA ==========
+// ========== FUNCIONES PARA FECHA DE ENTREGA ==========
+function initializeDateField() {
+    const fechaEntregaInput = document.getElementById('id_fecha_entrega');
+    if (!fechaEntregaInput) return;
+    
+    // Calcular fecha de hoy y mañana
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Configurar a medianoche para comparaciones exactas
+    const formattedToday = today.toISOString().split('T')[0];
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const formattedTomorrow = tomorrow.toISOString().split('T')[0];
+    
+    // Configuración inicial y aplicación de restricciones
+    fechaEntregaInput.setAttribute('min', formattedToday);
+    fechaEntregaInput.value = formattedTomorrow; // Valor predeterminado: mañana
+    
+    // Añadir estilos para mejorar la visualización de fechas pasadas
+    addDatePickerStyles();
+    
+    // Aplicar protección adicional para evitar selección de fechas pasadas
+    applyDateProtection(fechaEntregaInput, today, formattedTomorrow);
+    
+    // Validar al cambiar fecha
+    fechaEntregaInput.addEventListener('change', function() {
+        validateSelectedDate(this, today, formattedTomorrow);
+    });
+    
+    // Validar al enfocar el campo (evita manipulaciones)
+    fechaEntregaInput.addEventListener('focus', function() {
+        reapplyDateRestrictions(this, formattedToday);
+    });
+    
+    // Validar al intentar enviar el formulario
+    const form = fechaEntregaInput.closest('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!validateSelectedDate(fechaEntregaInput, today, formattedTomorrow)) {
+                e.preventDefault(); // Detener envío si la fecha es inválida
+                alert('Por favor seleccione una fecha válida para la reserva.');
+            }
+        });
+    }
+}
+
+// Función para validar la fecha seleccionada
+function validateSelectedDate(inputElement, todayDate, defaultValue) {
+    if (!inputElement || !inputElement.value) return false;
+    
+    const selectedDate = new Date(inputElement.value);
+    selectedDate.setHours(0, 0, 0, 0); // Configurar a medianoche para comparaciones exactas
+    
+    // Verificar si la fecha es anterior o igual a hoy
+    if (selectedDate < todayDate) {
+        inputElement.value = defaultValue; // Reestablecer al valor predeterminado
+        return false;
+    }
+    
+    return true;
+}
+
+// Función para aplicar protección adicional contra manipulaciones
+function applyDateProtection(inputElement, todayDate, defaultValue) {
+    // Interceptar eventos de input para evitar fechas pasadas
+    inputElement.addEventListener('input', function() {
+        validateSelectedDate(this, todayDate, defaultValue);
+    });
+    
+    // Monitorear cambios en el DOM para evitar manipulaciones
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'min') {
+                reapplyDateRestrictions(inputElement, todayDate.toISOString().split('T')[0]);
+            }
+        });
+    });
+    
+    observer.observe(inputElement, { attributes: true });
+}
+
+// Reaplica las restricciones de fecha
+function reapplyDateRestrictions(inputElement, minDate) {
+    // Forzar la restricción mínima
+    if (!inputElement.hasAttribute('min') || inputElement.getAttribute('min') !== minDate) {
+        inputElement.setAttribute('min', minDate);
+    }
+}
+
+// Función para agregar estilos al calendario
+function addDatePickerStyles() {
+    if (document.getElementById('date-picker-styles')) return;
+    
+    const styleSheet = document.createElement('style');
+    styleSheet.id = 'date-picker-styles';
+    styleSheet.innerHTML = `
+        /* Mejorar apariencia del selector de fecha */
+        input[type="date"] {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+        
+        /* Cambiar el color del indicador del calendario */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background-color: #f8f9fa;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        
+        /* Estilos para fechas pasadas (varían según navegador) */
+        input[type="date"]::-webkit-datetime-edit-day-field:disabled,
+        input[type="date"]::-webkit-datetime-edit-month-field:disabled,
+        input[type="date"]::-webkit-datetime-edit-year-field:disabled {
+            color: #ccc;
+            background-color: #f5f5f5;
+        }
+        
+        /* Estilo para cuando el campo no es válido */
+        input[type="date"]:invalid {
+            border-color: #dc3545;
+            background-color: #fff8f8;
+        }
+    `;
+    document.head.appendChild(styleSheet);
+}
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    initializeDateField();
+});
+
+// También inicializar si el campo se carga dinámicamente
+(function() {
+    if (document.getElementById('id_fecha_entrega')) {
+        initializeDateField();
+    } else {
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                    for (let i = 0; i < mutation.addedNodes.length; i++) {
+                        const node = mutation.addedNodes[i];
+                        if (node.nodeType === 1) {
+                            const dateField = node.id === 'id_fecha_entrega' ? 
+                                node : node.querySelector('#id_fecha_entrega');
+                            if (dateField) {
+                                initializeDateField();
+                                observer.disconnect();
+                                return;
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+})();
+
+
+// Función de inicialización inmediata para evitar conflictos
+(function() {
+    // Función para inicializar la navegación entre pestañas
+    function inicializarPestanasModalPago() {
+        console.log('Inicializando pestañas de pago...');
+        
+        // 1. Seleccionar las pestañas y contenidos directamente
+        const tabs = document.querySelectorAll('.payment-tab');
+        
+        // 2. Eliminar event listeners existentes (para evitar duplicados)
+        tabs.forEach(tab => {
+            const clone = tab.cloneNode(true);
+            tab.parentNode.replaceChild(clone, tab);
+        });
+        
+        // 3. Volver a seleccionar las pestañas después de los clones
+        const newTabs = document.querySelectorAll('.payment-tab');
+        
+        // 4. Agregar nuevos event listeners
+        newTabs.forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                // Prevenir cualquier comportamiento predeterminado
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Obtener el método asociado a esta pestaña
+                const method = this.getAttribute('data-method');
+                console.log('Pestaña seleccionada:', method);
+                
+                // Desactivar todas las pestañas y contenidos
+                document.querySelectorAll('.payment-tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                document.querySelectorAll('.payment-content').forEach(c => {
+                    c.classList.remove('active');
+                    c.style.display = 'none';
+                });
+                
+                // Activar la pestaña actual
+                this.classList.add('active');
+                
+                // Activar el contenido correspondiente
+                const content = document.getElementById(`${method}-content`);
+                if (content) {
+                    content.classList.add('active');
+                    content.style.display = 'flex';
+                    console.log(`Contenido activado: ${method}-content`);
+                } else {
+                    console.error(`No se encontró el contenido: ${method}-content`);
+                }
+            });
+            
+            console.log(`Evento click agregado a pestaña: ${tab.getAttribute('data-method')}`);
+        });
+        
+        // 5. Activar la primera pestaña por defecto
+        if (newTabs.length > 0) {
+            // Simular un clic en la primera pestaña
+            setTimeout(() => {
+                newTabs[0].click();
+                console.log('Primera pestaña activada automáticamente');
+            }, 100);
+        }
+    }
+    
+    // Función para restaurar el modal cuando se abre
+    function prepararModalAlAbrir() {
+        const modal = document.getElementById('paymentModal');
+        if (!modal) return;
+        
+        // Reemplazar la funcionalidad del botón para abrir el modal
+        const openBtn = document.querySelector('button[data-toggle="modal"][data-target="#paymentModal"]');
+        if (openBtn) {
+            openBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Mostrar el modal manualmente
+                modal.style.display = 'block';
+                modal.classList.add('show');
+                document.body.classList.add('modal-open');
+                
+                // Inicializar las pestañas después de que el modal esté visible
+                setTimeout(inicializarPestanasModalPago, 200);
+                
+                console.log('Modal abierto manualmente');
+            });
+        }
+        
+        // Manejar cierre del modal
+        const closeButtons = modal.querySelectorAll('[data-dismiss="modal"]');
+        closeButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                modal.style.display = 'none';
+                modal.classList.remove('show');
+                document.body.classList.remove('modal-open');
+            });
+        });
+    }
+    
+    // Manejar clic en "Confirmar método de pago"
+    function manejarConfirmacionPago() {
+        const confirmBtn = document.querySelector('.confirm-payment-btn');
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function() {
+                const activeTab = document.querySelector('.payment-tab.active');
+                if (!activeTab) {
+                    alert('Por favor, seleccione un método de pago');
+                    return;
+                }
+                
+                const method = activeTab.getAttribute('data-method');
+                console.log('Método confirmado:', method);
+                
+                // Actualizar campo oculto
+                const input = document.getElementById('id_metodo_pago');
+                if (input) {
+                    input.value = method;
+                }
+                
+                // Actualizar visualización
+                const display = document.getElementById('selected-method-display');
+                if (display) {
+                    const methodNames = {
+                        'nequi': 'Nequi',
+                        'daviplata': 'Daviplata', 
+                        'bancolombia': 'Bancolombia'
+                    };
+                    
+                    display.innerHTML = `
+                        <div class="selected-payment-method">
+                            <p>Método seleccionado: <strong>${methodNames[method] || method}</strong></p>
+                        </div>
+                    `;
+                }
+                
+                // Cerrar el modal
+                const modal = document.getElementById('paymentModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    modal.classList.remove('show');
+                    document.body.classList.remove('modal-open');
+                }
+            });
+        }
+    }
+    
+    // Ejecutar cuando el DOM esté listo
+    function iniciar() {
+        console.log('Ejecutando script solucionador de pestañas...');
+        prepararModalAlAbrir();
+        manejarConfirmacionPago();
+        console.log('Script solucionador listo');
+    }
+    
+    // Escuchar evento DOMContentLoaded para iniciar
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciar);
+    } else {
+        iniciar();
+    }
+    
+    // También ejecutar cuando la ventana haya cargado completamente
+    window.addEventListener('load', function() {
+        console.log('Ventana cargada completamente, reiniciando pestañas...');
+        inicializarPestanasModalPago();
+    });
+})();
+
+
+
+
+
+
+
+// Versión mejorada de la función abrirApp que funciona con un modal unificado para móvil y escritorio
+window.abrirApp = function(app) {
+    // Obtener el monto del pago
+    let monto = 0;
+    const montoElement = document.getElementById('advance-payment-amount');
+    if (montoElement) {
+        // Obtener el texto y eliminar cualquier carácter no numérico
+        monto = parseInt(montoElement.textContent.replace(/[^\d]/g, '')) || 0;
+    }
+    
+    const cuentas = {
+        'nequi': '3107998890',
+        'bancolombia': '28563959659'
+    };
+    
+    // Convertimos el monto a formato de moneda
+    const montoFormateado = new Intl.NumberFormat('es-CO').format(monto);
+    
+    // Modal unificado para todos los dispositivos
+    const modalHtml = `
+    <div id="instruccionesModal" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    ">
+        <div style="
+            background-color: white;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        ">
+            <span id="cerrarModalBtn" style="
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                font-size: 24px;
+                cursor: pointer;
+                font-weight: bold;
+            ">&times;</span>
+            
+            <h3 style="margin-top: 0;">Instrucciones para pago con ${app.charAt(0).toUpperCase() + app.slice(1)}</h3>
+            
+            <div style="margin: 15px 0;">
+                <p><strong>Número de cuenta:</strong> ${cuentas[app]}</p>
+                <p><strong>Monto a pagar:</strong> $${montoFormateado}</p>
+                <p><strong>Referencia:</strong> Pago La Kumbre</p>
+                
+                <hr style="border-top: 1px solid #eee; margin: 15px 0;">
+                
+                <p><strong>Instrucciones:</strong></p>
+                <ol style="padding-left: 20px;">
+                    <li>Abre la app de ${app} en tu teléfono</li>
+                    <li>Selecciona la opción "Enviar dinero" o "Transferir"</li>
+                    <li>Ingresa el número ${cuentas[app]}</li>
+                    <li>Ingresa el valor $${montoFormateado}</li>
+                    <li>En el campo de referencia escribe "Pago La Kumbre"</li>
+                    <li>Completa la transacción</li>
+                    <li>Toma captura de pantalla del comprobante</li>
+                    <li>Vuelve a esta página web</li>
+                    <li>Haz clic en "Confirmar método de pago"</li>
+                    <li>Sube el comprobante real de la transacción para validar tu reserva</li>
+                </ol>
+                
+                <div style="background-color: #fff3cd; padding: 10px; border-radius: 5px; margin-top: 15px; border-left: 4px solid #ffc107;">
+                    <p style="margin: 0; font-weight: bold;">Importante:</p>
+                    <p style="margin-top: 5px;">Sin el comprobante de pago no se podrá hacer válida tu reserva. Asegúrate de completar todos los pasos.</p>
+                </div>
+            </div>
+            
+            <button id="cerrarInstruccionesBtn" style="
+                width: 100%;
+                padding: 12px;
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+                margin-top: 15px;
+                font-weight: bold;
+            ">Entendido</button>
+        </div>
+    </div>`;
+    
+    // Insertar el modal en el body
+    const modalContainer = document.createElement('div');
+    modalContainer.innerHTML = modalHtml;
+    document.body.appendChild(modalContainer.firstElementChild);
+    
+    // Configurar eventos para cerrar el modal
+    document.getElementById('cerrarModalBtn').addEventListener('click', function() {
+        document.getElementById('instruccionesModal').remove();
+    });
+    
+    document.getElementById('cerrarInstruccionesBtn').addEventListener('click', function() {
+        document.getElementById('instruccionesModal').remove();
+    });
+    
+    // Cerrar al hacer clic fuera
+    document.getElementById('instruccionesModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.remove();
+        }
+    });
+};
+
+// Actualizar los enlaces en la interfaz
+document.addEventListener('DOMContentLoaded', function() {
+    // Actualizar los enlaces en la interfaz principal
+    function updatePaymentLinks() {
+        const nequiLink = document.querySelector('#nequi-content .app-link-btn');
+        const bancolombiaLink = document.querySelector('#bancolombia-content .app-link-btn');
+        
+        if (nequiLink) {
+            nequiLink.onclick = function(e) {
+                e.preventDefault();
+                window.abrirApp("nequi");
+            };
+            nequiLink.innerHTML = 'Ver instrucciones de pago <i class=\'bx bx-info-circle\'></i>';
+        }
+        
+        
+        if (bancolombiaLink) {
+            bancolombiaLink.onclick = function(e) {
+                e.preventDefault();
+                window.abrirApp("bancolombia");
+            };
+            bancolombiaLink.innerHTML = 'Ver instrucciones de pago <i class=\'bx bx-info-circle\'></i>';
+        }
+    }
+    
+    // Ejecutar inmediatamente y también después de un breve retraso para asegurar que funcione
+    updatePaymentLinks();
+    setTimeout(updatePaymentLinks, 1000);
+});
+</script>
+{% endblock %}

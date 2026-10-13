@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cabañas{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles/perfil.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <div class="container">
+        <div class="form-box login">
+            <form method="POST">
+                {% csrf_token %}
+                <h2>Bienvenido, {{ user.username }}</h2>
+                <h3>Información Personal</h3> <br>
+                <div class="input-box">
+                    Nombre: {{ user.username }}
+                    <i class='bx bxs-user'></i>
+                </div>
+                <div class="input-box">
+                     Email: {{ user.email }}
+                    <i class='bx bxs-envelope' ></i>
+                </div>
+
+           <br><br>
+            <div class="d-flex flex-row justify-content-between">
+                <div class="mt-4">
+                    <a href="{% url 'cambiar_contrasena' %}" class="boton1">
+                         Cambiar Contraseña
+                    </a> 
+                </div>
+                
+                <br><br>
+                <a href="{% url 'eliminar_cuenta' %}" class="boton1" onclick="eliminarCuenta(); return false;">
+                    Eliminar Cuenta
+                </a>
+            </div>
+            
+        </form>
+        </div>
+        
+        <div class="toggle-box">
+            <div class="toggle-panel toggle-left">
+                <img class="logotipo" src="{% static 'img/logotipo.png' %}" alt="Descripción de la imagen">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+<script>
+
+function eliminarCuenta() {
+  fetch('/eliminar_cuenta/', {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken'), // Obtén el token CSRF
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      alert(data.mensaje);
+      window.location.href = '/logout/'; // Redirige al usuario al logout
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert('Ocurrió un error al eliminar la cuenta.');
+    });
+}
+
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      // Does this cookie string begin with the name we want?
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
+
+</script>
+

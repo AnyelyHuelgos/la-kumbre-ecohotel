@@ -1,0 +1,405 @@
+/* compra_confirmada.css - Versión optimizada */
+
+:root {
+  --color-primary: #4a9587;
+  --color-secondary: #8ac3cb;
+  --color-accent: #c1e3ca;
+  --color-background: #f5fafc;
+  --color-success: #48a58f;
+  --color-info: rgba(138, 195, 203, 0.15);
+  --color-light: #f8fdff;
+  --shadow-soft: 0 5px 15px rgba(86, 149, 144, 0.12);
+  --gradient-primary: linear-gradient(135deg, #4a9587, #8ac3cb);
+}
+
+body {
+  min-height: auto !important; /* Elimina la restricción de 240vh o 100vh */
+  height: auto !important;
+  display: block !important; /* Cambia a display block para un flujo normal de documento */
+  position: relative; /* Para contexto de posicionamiento */
+}
+
+.container {
+  height: auto !important;
+  min-height: auto !important;
+  position: static !important;
+  margin: 30px auto; 
+  display:flex;
+  justify-content: center;
+}
+
+/* Estilo para el contenedor principal - asegura que ocupe todo el espacio disponible */
+.main-content {
+  flex: 1; /* Simplificamos a flex: 1 para que crezca y ocupe todo el espacio disponible */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  border-radius: 16px !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  border: none !important;
+  background-color: white;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.6s forwards;
+  height: auto;
+  min-height: unset;
+  /* Aseguramos que tenga un margen inferior adecuado */
+  margin-bottom: 30px;
+}
+
+
+.card-header {
+  background: var(--gradient-primary) !important;
+  border-bottom: none;
+  padding: 1.5rem !important;
+  text-align: center;
+}
+
+.card-header h2 {
+  font-size: 1.7rem !important;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.card-body {
+  padding: 2rem;
+  /* Aseguramos que haya espacio suficiente para todo el contenido */
+}
+
+/* Success icon styling */
+.fa-check-circle {
+  animation: pulse 2s infinite;
+  color: var(--color-success) !important;
+  margin-bottom: 1.5rem;
+  font-size: 3rem !important;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(58, 132, 118, 0));
+  }
+  50% {
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 8px rgba(72, 165, 143, 0.3));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(58, 132, 118, 0));
+  }
+}
+
+/* Card title and text - Ajustamos márgenes y espaciado */
+.card-title {
+  opacity: 0;
+  animation: fadeIn 0.8s forwards;
+  animation-delay: 0.2s;
+  margin-top: 1rem; /* Aumentamos el margen superior */
+  color: #333;
+  font-size: 1.3rem;
+  text-align: center;
+  margin-bottom: 1rem; /* Aumentamos el margen inferior */
+  line-height: 1.4; /* Mejoramos la altura de línea */
+}
+
+.card-text {
+  opacity: 0;
+  animation: fadeIn 0.8s forwards;
+  animation-delay: 0.3s;
+  color: #333;
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 1.5rem; /* Aumentamos el margen inferior */
+  line-height: 1.5; /* Mejoramos la altura de línea */
+}
+
+/* Alert styling */
+.alert-info {
+  background-color: var(--color-info);
+  border: none;
+  border-radius: 12px;
+  color: #333;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+  opacity: 0;
+  animation: fadeIn 0.8s forwards;
+  animation-delay: 0.7s;
+  padding: 1.5rem;
+  margin-bottom: 2rem; /* Aumentamos el margen inferior */
+}
+
+.alert-info h4 {
+  color: #333;
+  font-size: 1.3rem;
+  position: relative;
+  padding-bottom: 1rem; /* Aumentamos el padding inferior */
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  line-height: 1.4; /* Mejoramos la altura de línea */
+}
+
+.alert-info h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: 3px;
+}
+
+.alert-info h5 {
+  color: #333;
+  font-size: 1.15rem;
+  margin-top: 2rem; /* Aumentamos el margen superior */
+  margin-bottom: 1rem;
+  text-align: center;
+  line-height: 1.4; /* Mejoramos la altura de línea */
+}
+
+/* Mejoramos el espaciado de los párrafos dentro de alert-info */
+.alert-info p {
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+/* List group styling */
+.list-group {
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 1.5rem; /* Aumentamos el margen inferior */
+}
+
+.list-group-item {
+  padding: 0.8rem 1.1rem;
+  border: none;
+  margin-bottom: 0.5rem; /* Aumentamos el margen entre elementos */
+  border-radius: 8px !important;
+  background-color: var(--color-light);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+  color: #333;
+  font-weight: 500;
+  display: flex; /* Aseguramos que se use flexbox */
+  justify-content: space-between; /* Distribución espaciada */
+  align-items: center; /* Alineación vertical centrada */
+}
+
+.list-group-item:last-child {
+  margin-bottom: 0; /* Eliminamos el margen del último elemento */
+}
+
+.list-group-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+}
+
+.list-group-item.fw-bold {
+  background-color: var(--color-primary);
+  color: white;
+  margin-top: 0.5rem; /* Añadimos espacio antes del total */
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 20px !important;
+  font-weight: 500;
+  margin-left: 0.5rem; /* Añadimos espacio a la izquierda */
+  flex-shrink: 0; /* Evitamos que se encoja */
+}
+
+.bg-primary {
+  background-color: var(--color-secondary) !important;
+}
+
+.list-group-item.fw-bold .badge {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Strong elements */
+.alert-info p strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Total amount styling */
+.bg-light {
+  background-color: rgba(74, 149, 135, 0.08) !important;
+  border-radius: 10px;
+  padding: 1rem !important;
+  margin-top: 1.5rem; /* Añadimos margen superior */
+}
+
+.bg-light h4 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #333;
+  font-weight: 700;
+  line-height: 1.5; /* Mejoramos la altura de línea */
+}
+
+/* Button styling */
+.btn {
+  border-radius: 25px;
+  padding: 0.8rem 1.8rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: none;
+  margin: 0.5rem; /* Añadimos margen para separar botones */
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  border: none;
+  display: block; /* Hace que el botón sea un elemento de bloque */
+  width: fit-content; /* El botón solo tendrá el ancho de su contenido */
+  margin: 0 auto; 
+  box-shadow: 0 4px 10px rgba(74, 149, 135, 0.25);
+  color: black;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.btn-primary:hover, 
+.btn-primary:focus {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(74, 149, 135, 0.3);
+  background: linear-gradient(135deg, #3d8476, #79b2ba);
+}
+
+.btn-outline-secondary {
+  color: #333;
+  border-color: #777;
+  margin-top: 1rem; /* Añadimos espacio superior */
+}
+
+.btn-outline-secondary:hover {
+  background-color: rgba(74, 149, 135, 0.1);
+  color: #333;
+  border-color: #555;
+}
+
+/* Mejoramos el espaciado de los contenedores de botones */
+.mt-4 {
+  margin-top: 2rem !important; /* Aumentamos el margen superior */
+}
+
+/* Bottom message styling */
+.mt-4 p {
+  color: #333;
+  opacity: 0;
+  animation: fadeIn 0.8s forwards;
+  animation-delay: 1.6s;
+  text-align: center;
+  margin-bottom: 1rem;
+  line-height: 1.5; /* Mejoramos la altura de línea */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilo para el footer */
+footer {
+  width: 100%;
+  position: static !important; /* Asegura que no esté posicionado absolutamente */
+  bottom: auto !important; /* Elimina cualquier posicionamiento desde abajo */
+  margin-top: 30px; /* Espacio entre el contenido y el footer */
+  display: block !important; /* Asegura que sea un bloque normal */
+  clear: both; /* Limpia cualquier flotante anterior */
+}
+.main-content {
+  height: auto !important;
+  min-height: auto !important;
+  position: static !important;
+}
+
+/* Si hay problemas con la tarjeta, asegura que tenga altura automática */
+.card {
+  height: auto !important;
+  margin-bottom: 30px; /* Espacio adecuado después de la tarjeta */
+}
+
+/* Sobrescribe cualquier estilo que pueda estar forzando un alto fijo */
+.card-body,
+.card-header,
+.list-group,
+.alert-info {
+  height: auto !important;
+  position: static !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 0 15px;
+    margin: 20px auto;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .list-group-item {
+    padding: 0.8rem 1rem;
+    flex-wrap: wrap; /* Permitimos que se envuelva en móviles */
+  }
+  
+  /* En móviles, si los elementos son muy largos, permitimos que el badge se coloque debajo */
+  .list-group-item .badge {
+    margin-top: 0.5rem;
+    margin-left: 0;
+  }
+  
+  .bg-light h4 {
+    font-size: 1.3rem;
+  }
+  
+  .btn {
+    white-space: normal;
+    width: 100%; /* Botones de ancho completo en móvil */
+    margin: 0.5rem 0; /* Ajustamos márgenes vertical */
+  }
+  
+  .card-header h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  .card-title {
+    font-size: 1.3rem;
+  }
+}
