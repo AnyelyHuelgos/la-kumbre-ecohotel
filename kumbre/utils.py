@@ -69,13 +69,13 @@ def generar_factura_pdf(compra, productos_compra, reservas_compra, total_product
     )
     
     # Encabezado más compacto
-    elements.append(Paragraph(f"<font color='#2C5545' size='13'><b>FACTURA LA KUMBRE</b></font>", centrado))
+    elements.append(Paragraph("<font color='#2C5545' size='13'><b>RESUMEN DE SOLICITUD - LA KUMBRE</b></font>", centrado))
     elements.append(Paragraph(f"<font color='#2C5545' size='9'><b>Gracias por confiar en nosotros</b></font>", centrado))
     elements.append(Spacer(1, 0.15*inch))
     
     # Mensaje personalizado más corto
     elements.append(Paragraph(f"<font color='#2C5545' size='9'><b>Hola, {compra.nombre}</b></font>", normal_small))
-    elements.append(Paragraph("Gracias por elegir La Kumbre Ecohotel. Presenta esta factura al llegar para validar tu reserva.", normal_small))
+    elements.append(Paragraph("Gracias por elegir La Kumbre Ecohotel. Este documento resume tu solicitud; no acredita el pago hasta su verificacion.", normal_small))
     elements.append(Spacer(1, 0.15*inch))
     
     # --- INFORMACIÓN DEL CLIENTE ---
@@ -95,6 +95,8 @@ def generar_factura_pdf(compra, productos_compra, reservas_compra, total_product
     }
     nombre_metodo = METHOD_NAMES.get(compra.metodo_pago, 'Desconocido')
     elements.append(Paragraph(f"<b>Método de pago:</b> {nombre_metodo}", normal_small))
+    estado = "Verificado" if compra.pagado else "Pendiente de verificación"
+    elements.append(Paragraph(f"<b>Estado de pago:</b> {estado}", normal_small))
     elements.append(Spacer(1, 0.15*inch))
     
     # --- PRODUCTOS ---
@@ -262,6 +264,7 @@ def generar_factura_pdf(compra, productos_compra, reservas_compra, total_product
     
     # Calcular totales
     total_general = total_productos + total_reservas
+    # El saldo es estimado mientras el comprobante no se haya verificado.
     saldo_pendiente = Decimal(str(total_general)) - Decimal(str(total_a_pagar))
     
     # Tabla de resumen de pagos más compacta
@@ -269,8 +272,8 @@ def generar_factura_pdf(compra, productos_compra, reservas_compra, total_product
     
     data_resumen = [
         ['Total General:', f"${total_general:,.0f}"],
-        ['Anticipo Pagado:', f"${total_a_pagar:,.0f}"],
-        ['Saldo Pendiente:', f"${saldo_pendiente:,.0f}"]
+        ['Anticipo verificado:' if compra.pagado else 'Anticipo reportado (sin verificar):', f"${total_a_pagar:,.0f}"],
+        ['Saldo estimado tras verificar el anticipo:', f"${saldo_pendiente:,.0f}"]
     ]
     
     resumen_tabla = Table(data_resumen, colWidths=[3.5*inch, 2*inch])
@@ -299,7 +302,8 @@ def generar_factura_pdf(compra, productos_compra, reservas_compra, total_product
         
         elements.append(Paragraph(f"<font color='#D32F2F' size='8'><b>IMPORTANTE:</b> {mensaje_saldo}</font>", normal_small))
     else:
-        elements.append(Paragraph(f"<font color='#388E3C' size='9'><b>✓ PAGO COMPLETO REALIZADO</b></font>", centrado))
+        estado_final = "PAGO COMPLETO VERIFICADO" if compra.pagado else "PAGO PENDIENTE DE VERIFICACION"
+        elements.append(Paragraph(f"<b>{estado_final}</b>", centrado))
     
     # --- PIE DE PÁGINA ---
     elements.append(Spacer(1, 0.3*inch))
@@ -329,6 +333,6 @@ def generar_factura_response(compra, productos_compra, reservas_compra, total_pr
     """
     pdf = generar_factura_pdf(compra, productos_compra, reservas_compra, total_productos, total_reservas, total_a_pagar)
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="factura_La_Kumbre.pdf"; filename*=UTF-8\'\'factura_La_Kumbre.pdf'
+    response['Content-Disposition'] = 'attachment; filename="solicitud_La_Kumbre.pdf"'
     response.write(pdf)
     return response

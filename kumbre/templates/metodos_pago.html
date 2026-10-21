@@ -82,13 +82,13 @@
            
             <div class="reservation-note">
                 {% if reservas %}
-                    <p>Para hacer válida su reserva debe cancelar el 70% del precio total de la cabaña.</p>
+                    <p>Para registrar la solicitud, transfiere el 70% de las cabañas más el 100% de los productos que hayas añadido.</p>
                     <!-- Calculamos el valor a cancelar desde el servidor (70% de reservas + 100% de productos) -->
-                    <p class="advance-payment"><strong>Valor a cancelar:</strong> $<span id="advance-payment-amount">{{ total_a_pagar }}</span></p>
+                    <p class="advance-payment"><strong>Anticipo a transferir:</strong> $<span id="advance-payment-amount">{{ total_a_pagar }}</span></p>
                 {% else %}
                     <p>Para confirmar su pedido debe cancelar el 50% del precio total de los productos.</p>
                     <!-- Calculamos el valor a cancelar desde el servidor (50% del total) -->
-                    <p class="advance-payment"><strong>Valor a cancelar:</strong> $<span id="advance-payment-amount">{{ total_a_pagar }}</span></p>
+                    <p class="advance-payment"><strong>Anticipo a transferir:</strong> $<span id="advance-payment-amount">{{ total_a_pagar }}</span></p>
                 {% endif %}
             </div>
         </div>

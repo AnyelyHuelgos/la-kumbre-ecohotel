@@ -30,33 +30,7 @@ from .models import Compra, DetalleCompra
 from .forms import CompraForm
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-
-# Agrega esta vista temporal para debug
-def debug_productos(request):
-    """Vista temporal para debuggear productos y sus precios"""
-    productos = Producto.objects.all()
-    
-    debug_info = []
-    for producto in productos:
-        info = {
-            'nombre': producto.nombre,
-            'tipo': producto.tipo_producto,
-            'precio_base': producto.precio,
-            'precio_copa': producto.precio_copa,
-            'precio_jarra': producto.precio_jarra,
-        }
-        
-        if producto.tipo_producto == 'bebida':
-            info['precio_copa_calculado'] = producto.get_precio_por_presentacion('copa')
-            info['precio_jarra_calculado'] = producto.get_precio_por_presentacion('jarra')
-        else:
-            info['precio_calculado'] = producto.get_precio_por_presentacion()
-            
-        debug_info.append(info)
-    
-    return JsonResponse({'productos': debug_info})
-
-
+from .pagos import calcular_anticipo
 
 def inicio(request):
     usuario_id = request.session.get("usuario_id")
@@ -596,6 +570,7 @@ def eliminar_producto(request, producto_id):
 
     
 @login_required
+@login_required
 def metodo_pago(request):
     from decimal import Decimal
     metodo = request.GET.get('metodo', '')
@@ -628,16 +603,8 @@ def metodo_pago(request):
     total_carrito = total_productos + total_reservas
    
     
-    # CODIGO CORREGIDO: Calcular el total a pagar segun las reglas
-    if reservas:
-        # 70% del valor de reservas + 100% del valor de productos
-        total_a_pagar = (total_reservas * Decimal('0.7'))  
-    else:
-        # 50% del valor de productos
-        total_a_pagar = total_productos * Decimal('0.5')
-    
-    # Redondear para evitar decimales extranos
-    total_a_pagar = total_a_pagar.quantize(Decimal('1'))
+    # El anticipo incluye los productos incluso cuando hay cabañas.
+    total_a_pagar = calcular_anticipo(total_reservas, total_productos, hay_reservas=bool(reservas))
     
     form = CompraForm(initial={
         'metodo_pago': metodo,
@@ -672,19 +639,11 @@ from .models import (
 )
 from .forms import CompraForm
 import html
-import sys
-import io
-
-# Establecer la codificacion predeterminada para el sistema
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 @login_required
 def confirmar_compra(request):
     if request.method == "POST":
         print("Metodo POST recibido en confirmar_compra")
-        print("Datos del formulario:", request.POST)
-        print("Archivos:", request.FILES)
 
         if 'comprobante_pago' not in request.FILES:
             print("No se encontro archivo de comprobante_pago en la solicitud")
@@ -823,17 +782,11 @@ def confirmar_compra(request):
                 # Total general recalculado
                 total = total_productos + total_reservas
                 
-                if reservas_validas:
-                    # 70% del valor de reservas + 100% del valor de productos  
-                    total_a_pagar = (total_reservas * Decimal('0.7'))
-                else:
-                    # 50% del valor de productos
-                    total_a_pagar = total_productos * Decimal('0.5')
+                total_a_pagar = calcular_anticipo(
+                    total_reservas, total_productos, hay_reservas=bool(reservas_validas)
+                )
                 
-                # Redondear para evitar decimales extraños
-                total_a_pagar = total_a_pagar.quantize(Decimal('1'))
-                
-                # Crear la compra y marcarla como pagada
+                # El comprobante recibido NO equivale a un pago verificado.
                 try:
                     compra = Compra.objects.create(
                         usuario=request.user,
@@ -845,7 +798,7 @@ def confirmar_compra(request):
                         horario_comida=horario_comida,
                         fecha_entrega=fecha_entrega,
                         comprobante_pago=comprobante_pago,
-                        pagado=True
+                        pagado=False
                     )
                 except Exception as e:
                     messages.error(request, f"Error al crear la compra en la base de datos: {str(e)}")
@@ -966,7 +919,7 @@ def confirmar_compra(request):
                         'total_productos': total_productos, 
                         'total_reservas': total_reservas,
                         'total_general': total,
-                        'total_a_pagar': total_a_pagar,  # ✅ NUEVO: Anticipo pagado
+                        'total_a_pagar': total_a_pagar,  # Monto reportado, pendiente de verificar
                         'saldo_pendiente': total - total_a_pagar, 
                         'metodo_pago': nombre_metodo,
                         'horario_comida': horario_comida.strftime('%I:%M %p') if horario_comida else None,
@@ -1011,7 +964,7 @@ Esta notificacion ha sido generada automaticamente.
                     # Si hay error en los correos, solo registrar pero no detener la compra
                     print(f"Error al enviar correo al administrador: {str(e)}")
                 
-                messages.success(request, f"Compra realizada exitosamente! ")
+                messages.success(request, "Solicitud recibida. El comprobante está pendiente de verificación.")
                 return redirect('compra_confirmada', compra_id=compra.id)
                 
             except Exception as e:
@@ -1102,13 +1055,10 @@ def compra_confirmada(request, compra_id):
             reservas_compra.append(reserva_info)
             total_reservas += detalle.precio_total
     
-    # Calcular el total a pagar (anticipo) usando la misma lógica
-    if reservas_compra:
-        # 70% del valor de reservas
-        total_a_pagar = (Decimal(str(total_reservas)) * Decimal('0.7')).quantize(Decimal('1'))
-    else:
-        # 50% del valor de productos  
-        total_a_pagar = (Decimal(str(total_productos)) * Decimal('0.5')).quantize(Decimal('1'))
+    # Mostrar el mismo anticipo en caja, confirmación y PDF.
+    total_a_pagar = calcular_anticipo(
+        total_reservas, total_productos, hay_reservas=bool(reservas_compra)
+    )
     
     # Si se solicita específicamente el PDF (botón de descarga)
     if request.GET.get('descargar_pdf') == 'true':

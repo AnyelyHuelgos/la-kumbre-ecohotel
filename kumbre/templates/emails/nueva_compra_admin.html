@@ -349,7 +349,7 @@
                     <span>${{ total_general }}</span>
                 </div>
                 <div class="total-line" style="color: #28a745; font-weight: bold;">
-                    <span>Anticipo recibido:</span>
+                    <span>Anticipo declarado, sin verificar:</span>
                     <span>${{ total_a_pagar }}</span>
                 </div>
                 <div class="total-line" style="color: #dc3545; font-weight: bold;">
@@ -358,9 +358,9 @@
                 </div>
                 <div style="margin-top: 10px; padding: 10px; background-color: #f8f9fa; border-radius: 5px; font-size: 14px; color: #6c757d;">
                     {% if reservas %}
-                        <strong>Nota:</strong> Se recibió el 70% del valor de las reservas como anticipo.
+                        <strong>Nota:</strong> Se reporta un anticipo del 70% de las reservas más el 100% de los productos. Verifica la transferencia.
                     {% else %}
-                        <strong>Nota:</strong> Se recibió el 50% del valor de los productos como anticipo.
+                        <strong>Nota:</strong> Se reporta un anticipo del 50% del valor de los productos. Verifica la transferencia.
                     {% endif %}
                     El saldo restante se cobrará al momento de la entrega/servicio.
                 </div>
@@ -369,7 +369,7 @@
             <h3 class="section-title">Información de Pago</h3>
             <div class="payment-info">
                 <p>Método seleccionado: <span class="highlight">{{ metodo_pago|title }}</span></p>
-                <p>Estado: <span class="status-badge status-paid">PAGADO</span></p>
+                <p>Estado: <strong>PENDIENTE DE VERIFICACIÓN</strong></p>
             </div>
             
             <!-- Comprobante de pago -->

@@ -10,24 +10,24 @@
         <div class="col-md-8 offset-md-2">
             <div class="card border-success">
                 <div class="card-header bg-success text-white">
-                    <h2 class="mb-0">¡Compra Confirmada!</h2>
+                    <h2 class="mb-0">{% if compra.pagado %}¡Pago verificado!{% else %}¡Solicitud registrada!{% endif %}</h2>
                 </div>
                 <div class="card-body">
                     
                     <h3 class="card-title">Gracias por tu compra, {{ compra.nombre }}</h3>
-                    <p class="card-text">Tu pedido ha sido procesado exitosamente.</p>
+                    <p class="card-text">{% if compra.pagado %}Tu pago fue verificado.{% else %}Recibimos tu comprobante de transferencia. El pago está pendiente de revisión por La Kumbre.{% endif %}</p>
                     
                     
                     
                     <div class="mt-4 d-flex justify-content-center">
                         <a href="?descargar_pdf=true" class="btn btn-primary btn-lg">
-                            <i class="fas fa-file-pdf me-2"></i> Descargar Factura PDF
+                            <i class="fas fa-file-pdf me-2"></i> Descargar Resumen PDF
                         </a>
                     </div>
                     
                     <div class="mt-4">
                         <p class="text-center mb-1">
-                            Descarga tu factura para guardarla como comprobante de tu compra, búscala en los archivos de tu celular.
+                            Descarga el resumen de tu solicitud. Si el pago aún está pendiente, este documento no acredita que se haya verificado la transferencia.
                         </p>
                         <p class="text-center">
                             <a href="{% url 'inicio' %}" class="btn btn-outline-secondary mt-3">Volver al inicio</a>
