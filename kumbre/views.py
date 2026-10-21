@@ -1,3 +1,4 @@
+from .pagos import calcular_anticipo
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Sugerencia
@@ -631,10 +632,10 @@ def metodo_pago(request):
     # CODIGO CORREGIDO: Calcular el total a pagar segun las reglas
     if reservas:
         # 70% del valor de reservas + 100% del valor de productos
-        total_a_pagar = (total_reservas * Decimal('0.7'))  
+        total_a_pagar = calcular_anticipo(total_reservas, total_productos)  
     else:
         # 50% del valor de productos
-        total_a_pagar = total_productos * Decimal('0.5')
+        total_a_pagar = calcular_anticipo(total_reservas, total_productos)
     
     # Redondear para evitar decimales extranos
     total_a_pagar = total_a_pagar.quantize(Decimal('1'))
@@ -684,7 +685,6 @@ def confirmar_compra(request):
     if request.method == "POST":
         print("Metodo POST recibido en confirmar_compra")
         print("Datos del formulario:", request.POST)
-        print("Archivos:", request.FILES)
 
         if 'comprobante_pago' not in request.FILES:
             print("No se encontro archivo de comprobante_pago en la solicitud")
@@ -825,15 +825,15 @@ def confirmar_compra(request):
                 
                 if reservas_validas:
                     # 70% del valor de reservas + 100% del valor de productos  
-                    total_a_pagar = (total_reservas * Decimal('0.7'))
+                    total_a_pagar = calcular_anticipo(total_reservas, total_productos)
                 else:
                     # 50% del valor de productos
-                    total_a_pagar = total_productos * Decimal('0.5')
+                    total_a_pagar = calcular_anticipo(total_reservas, total_productos)
                 
                 # Redondear para evitar decimales extraños
                 total_a_pagar = total_a_pagar.quantize(Decimal('1'))
                 
-                # Crear la compra y marcarla como pagada
+                # Registrar comprobante recibido; pendiente de verificacion manual
                 try:
                     compra = Compra.objects.create(
                         usuario=request.user,
@@ -845,7 +845,7 @@ def confirmar_compra(request):
                         horario_comida=horario_comida,
                         fecha_entrega=fecha_entrega,
                         comprobante_pago=comprobante_pago,
-                        pagado=True
+                        pagado=False
                     )
                 except Exception as e:
                     messages.error(request, f"Error al crear la compra en la base de datos: {str(e)}")
@@ -1011,7 +1011,7 @@ Esta notificacion ha sido generada automaticamente.
                     # Si hay error en los correos, solo registrar pero no detener la compra
                     print(f"Error al enviar correo al administrador: {str(e)}")
                 
-                messages.success(request, f"Compra realizada exitosamente! ")
+                messages.success(request, "Comprobante recibido. Tu pago queda pendiente de verificacion.")
                 return redirect('compra_confirmada', compra_id=compra.id)
                 
             except Exception as e:
@@ -1105,10 +1105,10 @@ def compra_confirmada(request, compra_id):
     # Calcular el total a pagar (anticipo) usando la misma lógica
     if reservas_compra:
         # 70% del valor de reservas
-        total_a_pagar = (Decimal(str(total_reservas)) * Decimal('0.7')).quantize(Decimal('1'))
+        total_a_pagar = calcular_anticipo(total_reservas, total_productos)
     else:
         # 50% del valor de productos  
-        total_a_pagar = (Decimal(str(total_productos)) * Decimal('0.5')).quantize(Decimal('1'))
+        total_a_pagar = calcular_anticipo(total_reservas, total_productos)
     
     # Si se solicita específicamente el PDF (botón de descarga)
     if request.GET.get('descargar_pdf') == 'true':
