@@ -106,9 +106,17 @@
                     <h3>Experiencias Inolvidables</h3>
                     <div class="video-container">
                         <!-- Thumbnail overlay with play button -->
-                        <div class="video-thumbnail" style="cursor: default;">
-                            <img src="{% static 'img/entrada.jpg' %}" alt="Fotografia de La Kumbre">
+                        <div class="video-thumbnail" id="videoThumbnail">
+                            <img src="{% static 'img/entrada.jpg' %}" alt="Video de La Kumbre">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
                         </div>
+                        <!-- Hidden video that will be shown on click -->
+                        <video id="experienceVideo" preload="metadata">
+                            <source src="{% static 'videos/Como-llegar.mp4' %}" type="video/mp4">
+                            Tu navegador no soporta el elemento de video.
+                        </video>
                     </div>
                 </div>
             </div>
@@ -181,7 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
             videoThumbnail.style.display = 'block';
         });
     } else {
-        // Video deshabilitado temporalmente: se muestra una fotografia.
+        console.error("Could not find video elements!");
     }
 });
 
