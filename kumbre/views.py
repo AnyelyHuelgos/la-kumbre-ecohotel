@@ -28,7 +28,7 @@ from django.db.models import Sum, F
 from .forms import MetodoPagoForm
 from .models import Compra, DetalleCompra
 from .forms import CompraForm
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.core.exceptions import ValidationError
 from .pagos import calcular_anticipo
 
@@ -641,6 +641,7 @@ from .forms import CompraForm
 import html
 
 @login_required
+@transaction.atomic
 def confirmar_compra(request):
     if request.method == "POST":
         print("Metodo POST recibido en confirmar_compra")
@@ -726,32 +727,44 @@ def confirmar_compra(request):
                 total_reservas = Decimal('0')
                 reservas_validas = []
                 
+                fechas_carrito = set()
                 for idx, reserva_data in enumerate(reservas_sesion):
                     # Verificar que la cabana existe
                     try:
                         cabana = Cabana.objects.get(nombre=reserva_data['cabana'])
                         fecha = datetime.strptime(reserva_data['fecha'], '%Y-%m-%d').date()
+                        clave_reserva = (cabana.pk, fecha)
+                        if clave_reserva in fechas_carrito:
+                            messages.error(request, f"Has elegido {cabana.nombre} dos veces para el {fecha}. Revisa tu carrito.")
+                            return redirect('resumen_compra')
+                        fechas_carrito.add(clave_reserva)
                         
                         # Verificar que la fecha no este ocupada por otra reserva confirmada
                         if Reserva.objects.filter(cabana=reserva_data['cabana'], fecha=fecha, confirmada=True).exists():
                             messages.error(request, f"La cabana {reserva_data['cabana']} ya no esta disponible para el {fecha}.")
-                            continue  # Saltar esta reserva
+                            return redirect('resumen_compra')  # No cobrar un carrito incompleto
                             
                         # Recalcular el precio (para evitar manipulaciones)
                         try:
                             precios = PrecioCabana.objects.get(cabana=cabana)
                             es_festivo = Festivo.objects.filter(fecha=fecha).exists()
-                            es_fin_semana = fecha.weekday() in [5, 6]
+                            es_fin_semana = fecha.weekday() in [4, 5]  # Viernes y sábado, como en el calendario
                             
                             if es_festivo:
                                 precio_base = precios.precio_festivo
-                                precio_persona_adicional = precios.precio_persona_adicional_finde_festivo
                             elif es_fin_semana:
                                 precio_base = precios.precio_fin_semana
-                                precio_persona_adicional = precios.precio_persona_adicional_finde_festivo
                             else:
                                 precio_base = precios.precio_entre_semana
-                                precio_persona_adicional = precios.precio_persona_adicional_entre_semana
+                            # Aplicar la misma regla de personas adicionales del formulario de reserva.
+                            if precios.es_cabana_especial:
+                                precio_persona_adicional = (
+                                    precios.precio_persona_adicional_finde_festivo
+                                    if (es_festivo or es_fin_semana)
+                                    else precios.precio_persona_adicional_entre_semana
+                                )
+                            else:
+                                precio_persona_adicional = Decimal('80000')
                             
                             personas_adicionales = int(reserva_data.get('personas_adicionales', 0))
                             precio_adicional = personas_adicionales * Decimal(str(precio_persona_adicional))
@@ -820,6 +833,7 @@ def confirmar_compra(request):
                         
                         # Validar que el precio sea válido
                         if precio_producto <= 0:
+                            transaction.set_rollback(True)
                             messages.error(request, f"El producto '{item.producto.nombre}' no tiene un precio válido para la presentación '{presentacion}'.")
                             return redirect('metodos_pago')
                         
@@ -846,8 +860,9 @@ def confirmar_compra(request):
                         productos_compra.append(producto_info)
                         detalles_compra.append(f"- {item.cantidad}x {item.producto.nombre} ({presentacion}) - ${precio_total_producto}")
                         
-                    except Exception as e:
-                        print(f"Error al procesar producto {item.producto.id}: {str(e)}")
+                    except Exception:
+                        # Evitar guardar una compra con solo parte de los productos.
+                        raise
                        
 
                 # Registrar cada reserva valida y confirmarla
@@ -884,11 +899,9 @@ def confirmar_compra(request):
                         }
                         reservas_compra.append(reserva_info)
                         detalles_compra.append(f"- Reserva en {nueva_reserva.cabana} para {nueva_reserva.fecha} - ${nueva_reserva.precio}")
-                    except Exception as e:
-                        print(f"Error al procesar reserva: {str(e)}")
-                        # Puedes querer registrar mas detalles para depuracion
-                        import traceback
-                        traceback.print_exc()
+                    except Exception:
+                        # Si una reserva falla, revertir la compra y todos sus detalles.
+                        raise
 
                 # Limpiar el carrito despues de procesar todo correctamente
                 # 1. Limpiar las reservas de la sesion
@@ -952,14 +965,15 @@ Esta notificacion ha sido generada automaticamente.
 """
                     
                     # Enviar correo al administrador
-                    send_mail(
+                    # Enviar el mensaje solo después de confirmar la transacción de base de datos.
+                    transaction.on_commit(lambda: send_mail(
                         subject=subject_admin,
                         message=plain_message_admin,
                         from_email=settings.EMAIL_HOST_USER,
                         recipient_list=[admin_email],
                         html_message=html_message_admin,
-                        fail_silently=True,  # Para que no falle la compra si hay error de correo
-                    )
+                        fail_silently=True,
+                    ))
                 except Exception as e:
                     # Si hay error en los correos, solo registrar pero no detener la compra
                     print(f"Error al enviar correo al administrador: {str(e)}")
@@ -967,11 +981,13 @@ Esta notificacion ha sido generada automaticamente.
                 messages.success(request, "Solicitud recibida. El comprobante está pendiente de verificación.")
                 return redirect('compra_confirmada', compra_id=compra.id)
                 
-            except Exception as e:
-                print(f"Error en confirmar_compra: {str(e)}")
-                import traceback
-                traceback.print_exc()
-                messages.error(request, "Error al procesar la compra. Intentalo de nuevo.")
+            except IntegrityError:
+                transaction.set_rollback(True)
+                messages.error(request, "Una de las cabañas ya fue reservada para esa fecha. Revisa tu carrito e inténtalo de nuevo.")
+                return redirect('resumen_compra')
+            except Exception:
+                transaction.set_rollback(True)
+                messages.error(request, "No pudimos procesar tu solicitud. No se guardó ninguna compra incompleta.")
                 return redirect('metodos_pago')
         else:
             for field, errors in form.errors.items():
