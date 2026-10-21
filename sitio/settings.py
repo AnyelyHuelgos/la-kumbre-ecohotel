@@ -23,12 +23,12 @@ environ.Env.read_env(os.path.join(BASE_DIR,'.env'))
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'clave-temporal'
+SECRET_KEY = env('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DJANGO_DEBUG', default=False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 LOGIN_URL = 'iniciar_sesion'
 LOGIN_REDIRECT_URL = 'cabañas'
 LOGOUT_REDIRECT_URL = 'inicio'
@@ -90,29 +90,12 @@ FILE_CHARSET = 'utf-8'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': env('DB_ENGINE'),
+        'NAME': BASE_DIR / env('DB_NAME'),
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#         'USER': 'anyelyho1@gmail.com',
-#         'PASSWORD': 'uvml zlsx ncnw wsdr',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     },
-#      'nueva': {  # Segunda base de datos (la que acabas de crear)
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'usuario',  # Nombre de la nueva base de datos
-#         'USER': 'anyelyho1@gmail.com',
-#         'PASSWORD': 'uvml zlsx ncnw wsdr',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
+# Database credentials are configured using environment variables.
 
 
 
@@ -169,28 +152,11 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = env("EMAIL_HOST")
-# EMAIL_PORT = env("EMAIL_PORT")
-# EMAIL_USE_TLS = env("EMAIL_USE_TLS")
-# EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-# EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_PORT = env.int("EMAIL_PORT")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'anyelyho1@gmail.com'  # Reemplaza con tu correo de Gmail
-# EMAIL_HOST_PASSWORD = 'uvml zlsx ncnw wsdr'  # Reemplaza con tu contraseña o APP PASSWORD
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
-
-
-
-LOGIN_REDIRECT_URL = "inicio"
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
-
-ADMIN_EMAIL = "lakumbredelhuila01@gmail.com" 
+ADMIN_EMAIL = env('ADMIN_EMAIL', default=env('EMAIL_HOST_USER', default=''))

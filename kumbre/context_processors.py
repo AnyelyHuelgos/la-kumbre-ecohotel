@@ -9,7 +9,7 @@ def cart_counter(request):
         productos_count = CarritoProducto.objects.filter(usuario=request.user).count()
         total_items += productos_count
     
-    # Contar reservas en sesi¨®n
+    # Contar reservas en sesiÂ¨Â®n
     reservas_count = len(request.session.get('reservas_carrito', []))
     total_items += reservas_count
     
