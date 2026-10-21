@@ -31,21 +31,26 @@
         <form action="{% url 'registro' %}" method="POST">
             {% csrf_token %}
             <h1>Registro</h1>
+            {% if errores_registro %}<div role="alert" class="registration-errors">{% for error in errores_registro %}<p>{{ error }}</p>{% endfor %}</div>{% endif %}
             <div class="input-box">
                 <input type="text" placeholder="Usuario" id="nombre" name="username" required value="{{ datos_previos.username|default:'' }}">
                 <i class='bx bxs-user'></i>
             </div>
             <div class="input-box">
-                <input type="number" placeholder="Telefono" id="telefono" name="telefono" required value="{{ datos_previos.telefono|default:'' }}">
+                <input type="email" placeholder="Correo electrónico" id="registro_email" name="email" autocomplete="email" required value="{{ datos_previos.email|default:'' }}">
+                <i class="bx bxs-envelope"></i>
+            </div>
+            <div class="input-box">
+                <input type="tel" placeholder="Telefono" id="telefono" name="telefono" required value="{{ datos_previos.telefono|default:'' }}">
                 <i class='bx bxs-phone'></i>
             </div>
             <div class="input-box">
-                <input type="password" placeholder="Contraseña" id="password" name="password" required>
+                <input type="password" placeholder="Contraseña" id="password" name="password1" minlength="8" required>
                 <i class='bx bxs-lock-alt' ></i>
-                <p class="con">La contraseña debe tener minimo 6 caracteres</p>
+                <p class="con">La contraseña debe tener al menos 8 caracteres</p>
             </div>
             <div class="input-box">
-                <input type="password" placeholder="Confirmar Contaseña" id="confirm_password" name="confirm_password" required>
+                <input type="password" placeholder="Confirmar Contaseña" id="confirm_password" name="password2" minlength="8" required>
                 <i class='bx bxs-lock-alt' ></i>
             </div>
             

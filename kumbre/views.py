@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Sugerencia
-from .forms import SugerenciaForm
+from .forms import SugerenciaForm, FormularioRegistro
 from django.contrib.auth.models import User
 from django.contrib.auth import login
 from .models import Usuario
@@ -260,39 +260,24 @@ def manual(request):
 
 
 def registro(request):
+    """Registrar usuarios con correo real y validaciones de Django."""
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        confirm_password = request.POST['confirm_password']
-        telefono = request.POST['telefono']
-        # Validaciones
-        error = None
-        if password != confirm_password:
-            error = 'Las contrasenas no coinciden'
-        elif User.objects.filter(username=username).exists():
-            error = 'El nombre de usuario ya esta en uso'
-        if error:
-            messages.error(request, error)
-            # En lugar de redirigir, renderizamos la misma plantilla con los datos ingresados
-            return render(request, 'iniciar_sesion.html', {
-                'register_mode': True,
-                'datos_previos': {
-                    'username': username,
-                    'telefono': telefono
-                }
-            })
-        # Si no hay errores, crear el usuario
-        # Creamos un correo ficticio basado en el nombre de usuario para cumplir con el modelo User
-        email = f"{username}@lakumbre.com"
-        user = User.objects.create_user(username=username, email=email, password=password)
-        
-        # Crear el perfil de usuario con el tel��fono
-        usuario_perfil = Usuario(usuario=user, telefono=telefono)
-        usuario_perfil.save()
-        
-        messages.success(request, "Registro Exitoso! Ahora inicia sesion.")
-        return redirect('iniciar_sesion')
-    return render(request, 'iniciar_sesion.html', {'register_mode': True})
+        form = FormularioRegistro(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registro exitoso. Ahora inicia sesión.")
+            return redirect("iniciar_sesion")
+        errores = [str(e) for grupo in form.errors.values() for e in grupo]
+        return render(request, "iniciar_sesion.html", {
+            "register_mode": True,
+            "errores_registro": errores,
+            "datos_previos": {
+                "username": request.POST.get("username", ""),
+                "email": request.POST.get("email", ""),
+                "telefono": request.POST.get("telefono", ""),
+            },
+        })
+    return render(request, "iniciar_sesion.html", {"register_mode": True})
 
 
 from django.contrib.auth.forms import AuthenticationForm

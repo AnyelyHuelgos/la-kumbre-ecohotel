@@ -89,3 +89,35 @@ class ReservaIntegridadTests(TestCase):
                 )
                 self._crear_reserva()
         self.assertFalse(Compra.objects.exists())
+
+
+class RegistroSeguridadTests(TestCase):
+    def test_registro_guarda_correo_y_perfil(self):
+        response = self.client.post(reverse("registro"), {
+            "username": "cliente_123", "email": "CLIENTE@example.com",
+            "telefono": "3001234567", "password1": "UnaClaveLarga2026!",
+            "password2": "UnaClaveLarga2026!",
+        })
+        self.assertEqual(response.status_code, 302)
+        usuario = User.objects.get(username="cliente_123")
+        self.assertEqual(usuario.email, "cliente@example.com")
+        self.assertTrue(usuario.check_password("UnaClaveLarga2026!"))
+        self.assertEqual(usuario.usuario.telefono, "3001234567")
+
+    def test_registro_rechaza_clave_corta(self):
+        response = self.client.post(reverse("registro"), {
+            "username": "cliente_corto", "email": "corto@example.com",
+            "telefono": "3001234567", "password1": "abc", "password2": "abc",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username="cliente_corto").exists())
+
+    def test_registro_rechaza_correo_duplicado(self):
+        User.objects.create_user(username="existente", email="cliente@example.com")
+        response = self.client.post(reverse("registro"), {
+            "username": "nuevo", "email": "CLIENTE@example.com",
+            "telefono": "3001234567", "password1": "UnaClaveLarga2026!",
+            "password2": "UnaClaveLarga2026!",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(username="nuevo").exists())

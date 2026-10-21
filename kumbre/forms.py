@@ -1,4 +1,5 @@
 from django import forms
+import re
 from .models import Sugerencia, Usuario, Compra
 
 from django.contrib.auth.forms import UserCreationForm
@@ -55,8 +56,20 @@ class SugerenciaForm(forms.ModelForm):
         }
 
 class FormularioRegistro(UserCreationForm):
-    email = forms.EmailField(max_length=254)
-    telefono = forms.CharField(max_length=15)
+    email = forms.EmailField(max_length=254, required=True)
+    telefono = forms.CharField(max_length=16, required=True)
+
+    def clean_email(self):
+        correo = self.cleaned_data["email"].strip().lower()
+        if User.objects.filter(email__iexact=correo).exists():
+            raise forms.ValidationError("Ya existe una cuenta con este correo electrónico.")
+        return correo
+
+    def clean_telefono(self):
+        telefono = self.cleaned_data["telefono"].strip()
+        if not re.fullmatch(r"\+?[0-9]{7,15}", telefono):
+            raise forms.ValidationError("Ingresa un teléfono válido de 7 a 15 dígitos.")
+        return telefono
 
     class Meta:
         model = User
